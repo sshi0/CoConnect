@@ -1,0 +1,25 @@
+// THIS FILE CONTAINS REST CLIENT TESTS 
+
+// create a user hakan
+POST http://localhost:8080/auth/users
+Content-Type: application/json
+
+{
+    "credentials": { "username": "me@hakan.com",
+    "password": "bl@hbl@h"
+    },
+    "extra": "hakan"
+}
+
+
+###
+
+// login for hakan with correct password
+POST http://localhost:8080/auth/users/me@hakan.com
+Content-Type: application/json
+
+{
+    "password": "bl@hbl@h"
+}
+
+###

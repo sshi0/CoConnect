@@ -1,0 +1,40 @@
+{
+  // This file defines various debug configurations for VS Code
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // First launch parcel server "parcel <entry point>" with desired entry point
+      // Check parcel documentation https://parceljs.org/recipes/debugging/
+      "type": "chrome",
+      "request": "launch",
+      "name": "Client via Chrome",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      // "breakOnLoad": true, // this property does not exist, contrary to parcel documentation
+      "sourceMapPathOverrides": {
+        "/__parcel_source_root/*": "${webRoot}/*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Server",
+      "skipFiles": ["${workspaceFolder}/node_modules/**/*.*", "<node_internals>/**"],
+      "preLaunchTask": "npm: build:server",
+      "sourceMaps": true,
+      "program": "${workspaceFolder}/.server.debug/server/serve",
+      "outFiles": ["${workspaceFolder}/.server.debug/server/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Postfix Calc",
+      "skipFiles": ["${workspaceFolder}/node_modules/**/*.*", "<node_internals>/**"],
+      // "preLaunchTask": "npm: build:trial",
+      "sourceMaps": true,
+      "program": "${workspaceFolder}/trials/ts-eg/.out/postfixCalc.js",
+      "outFiles": ["${workspaceFolder}/trials/ts-eg/.out/**/*.js"]
+    }
+  ]
+}
