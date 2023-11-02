@@ -31,7 +31,7 @@ export interface ISuccess {
     | ILogin
     | IChatMessage[]
     | IUser[]
-    | IAuthenticatedUser[]
+    | IAuthenticatedUser
     | null;
 }
 
