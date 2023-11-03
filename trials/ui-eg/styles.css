@@ -1,1 +1,180 @@
 
+<style>
+body {
+    background-color: white;
+}
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 25%;
+}
+.title {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-family:system-ui;
+}
+.chatTitle { 
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 30px;
+    font-weight: bold;
+    font-family:system-ui;
+    white-space: nowrap;
+}
+.welcome {
+    padding-top: 20px;
+    text-align: center;
+    font-size: 30px;
+    font-family:system-ui;
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: auto;
+}
+.body-container {
+    display: flex;
+    flex-direction: column;
+    background-color:darkslategrey;
+    align-items: center;
+    margin-top: 50px;
+    padding-bottom: 20px;
+}
+label {
+    color: white;
+    font-size: 20px;
+    text-align: left;
+    width: 33%;
+    padding-top: 10px;
+    font-family:system-ui;
+}
+input {
+    width: 30%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px gray;
+}
+.button {
+    display: flex;
+    justify-content: flex-start;
+    background-color: white;
+    color: black;
+    border: 2px solid;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    font-family:system-ui;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px black;
+}
+.welcomebutton {
+    background-color: white;
+    color: black;
+    border: 3px solid;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px black;
+    font-family:system-ui;
+}
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    align-items: center;
+    margin-top: 50px;
+    padding-bottom: 20px;
+    border: 3px solid;
+    height: 65vh;
+}
+.message {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    width: 80%;
+    height: 20%;
+    background-color:lightgray;
+    border-radius: 20px;
+}
+.bot {
+    align-self: flex-start;
+}
+.user {
+    align-self: flex-end;
+}
+.avatar {
+    align-self:flex-start;
+    width: 10%;
+    height: 15%;
+    padding: 2%;
+    background-color: navy;
+    color: white;
+    text-align:center;
+    font-size: 16px;
+    margin: 4px 2px;
+    font-family:system-ui;
+    border-radius: 50%;
+}
+.bubble {
+    width: 60%;
+    height: 70%;
+    padding: 10px;
+    border-radius: 10%;
+    background-color:aqua;
+    font-size: 16px;
+    margin: 4px 2px;
+    font-family:system-ui;
+}
+.footer {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    align-items: center;
+    margin-top: 10px;
+    padding-bottom: 20px;
+    border: 3px solid;
+    height: 20vh;
+}
+.friendList {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    align-items: center;
+    margin-top: 50px;
+    padding-bottom: 20px;
+    height: 65vh;
+}
+.friend {
+    width: 90%;
+    height: 30%;
+    padding: 10px;
+    border-radius: 10%;
+    background-color:darkcyan;
+    margin: 10px;
+}
+.friendName {
+    font-size: 25px;
+    margin: 4px 2px;
+    font-family:system-ui;
+    color: white;
+}
+.friendEmail {
+    background-color:white;
+    border: 2px solid;
+    border-radius: 20%;
+    padding: 1% 1%;
+    font-size: 25px;
+    font-family:system-ui;
+    width: 50%;
+}
+</style>
