@@ -1,4 +1,3 @@
-
 <style>
 body {
     background-color: white;
@@ -8,12 +7,6 @@ body {
     flex-direction: row;
     align-items: center;
     gap: 25%;
-}
-.title {
-    text-align: center;
-    font-size: 30px;
-    font-weight: bold;
-    font-family:system-ui;
 }
 .chatTitle { 
     margin-left: auto;
@@ -39,17 +32,28 @@ body {
     align-items: center;
     margin-top: 50px;
     padding-bottom: 20px;
+    border-radius: 2vmin;
+}
+.chatContainer {
+    background-color: white;
+    border-radius: 0;
+    border: 3px solid;
+    height: 65vh;
+}
+.friendList {
+    background-color: white;
+    align-items: center;
 }
 label {
     color: white;
     font-size: 20px;
     text-align: left;
-    width: 33%;
+    width: 31vw;
     padding-top: 10px;
     font-family:system-ui;
 }
 input {
-    width: 30%;
+    width: 30vw;
     padding: 10px;
     border: none;
     border-radius: 5px;
@@ -72,6 +76,11 @@ input {
     border-radius: 5px;
     box-shadow: 5px 5px 5px black;
 }
+.messageButton{
+    height: 4vmin;
+    font-size:16px;
+    padding: 2px;
+}
 .welcomebutton {
     background-color: white;
     color: black;
@@ -87,24 +96,15 @@ input {
     box-shadow: 5px 5px 5px black;
     font-family:system-ui;
 }
-.chatContainer {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    align-items: center;
-    margin-top: 50px;
-    padding-bottom: 20px;
-    border: 3px solid;
-    height: 65vh;
-}
 .message {
     display: flex;
+    flex-direction: row;
     align-items: center;
     margin: 10px;
     width: 80%;
     height: 20%;
-    background-color:lightgray;
-    border-radius: 20px;
+    background-color:darkslategrey;
+    border-radius: 2vmin;
 }
 .bot {
     align-self: flex-start;
@@ -112,69 +112,79 @@ input {
 .user {
     align-self: flex-end;
 }
-.avatar {
-    align-self:flex-start;
+.messagerDetails {
+    display: flex;
+    flex-direction: col;
+    justify-content: center;
+    align-items: center;
     width: 10%;
-    height: 15%;
-    padding: 2%;
+    flex-wrap: wrap;
+}
+.avatar {
+    display: flex;
+    padding: 10% 20%;
     background-color: navy;
     color: white;
     text-align:center;
     font-size: 16px;
-    margin: 4px 2px;
     font-family:system-ui;
     border-radius: 50%;
 }
+.timeStamp {
+    display: flex;
+    padding: 7% 15%;
+    color: white;
+    text-align:center;
+    font-size: 10px;
+    font-family:system-ui;
+}
 .bubble {
-    width: 60%;
+    width: 80%;
     height: 70%;
     padding: 10px;
-    border-radius: 10%;
-    background-color:aqua;
+    border-radius: 2vmin;
+    background-color:#4C1C24;
     font-size: 16px;
+    color: white;
     margin: 4px 2px;
     font-family:system-ui;
 }
 .footer {
     display: flex;
-    flex-direction: column;
+    flex-direction: col;
     background-color: white;
-    align-items: center;
+    align-items: top;
     margin-top: 10px;
     padding-bottom: 20px;
-    border: 3px solid;
     height: 20vh;
 }
-.friendList {
+.messageContainer {
     display: flex;
-    flex-direction: column;
-    background-color: white;
-    align-items: center;
-    margin-top: 50px;
-    padding-bottom: 20px;
-    height: 65vh;
+    flex-direction: row;
+    justify-content: center;
+    align-items: top;
+    width: 100%;
+    height: 10vmin;
+}
+.newMessage {
+    text-align: top;
+    margin: .5%;
+    width: 70%;
+    height: 15%;
 }
 .friend {
     width: 90%;
-    height: 30%;
-    padding: 10px;
-    border-radius: 10%;
-    background-color:darkcyan;
-    margin: 10px;
+    padding: 1vmin;
+    border-radius: 2vmin;
+    background-color:darkslategrey;
+    margin: 1vmin;
 }
-.friendName {
-    font-size: 25px;
-    margin: 4px 2px;
-    font-family:system-ui;
+.friendDets {
     color: white;
-}
-.friendEmail {
-    background-color:white;
-    border: 2px solid;
-    border-radius: 20%;
-    padding: 1% 1%;
     font-size: 25px;
+    text-align: left;
+    width: 31vw;
+    padding-bottom: 1vmin;
     font-family:system-ui;
-    width: 50%;
 }
 </style>
