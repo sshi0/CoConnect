@@ -39,6 +39,8 @@ body {
     border-radius: 0;
     border: 3px solid;
     height: 65vh;
+    overflow-y: scroll;
+    scroll-behavior: auto;
 }
 .friendList {
     background-color: white;
@@ -75,6 +77,10 @@ input {
     cursor: pointer;
     border-radius: 5px;
     box-shadow: 5px 5px 5px black;
+}
+.button:hover {
+    background-color: navy;
+    color: white;
 }
 .messageButton{
     height: 4vmin;
