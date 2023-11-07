@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const ENV: string = process.env.ENV ?? 'DEV'; // defaults to DEV
+port const PORT: number = process.env.PORT ? Number(process.env.PORT) : 3000; // defaults to 3000
 
 export const DB_CONN_STR: string =
   ENV === 'DEV'
