@@ -19,7 +19,7 @@
     "serve:friends": "parcel client/pages/friends.html --dist-dir .client.debug --no-cache",
     "clean:build": "npm-run-all clean:all build",
     "start": "node ./.dist/server/serve",
-    "watch": "nodemon --watch client --watch server -e js,ts,html,pug,css,json --exec npm-run-all build start",
+    "watch": "nodemon --watch client --watch server --watch .env -e js,ts,html,pug,css,json --exec npm-run-all build start",
     "test:model": "jest ./tests/server.tests/model.tests --env=node",
     "test:rest": "jest ./tests/server.tests/rest.tests/home.rest.test --env=node && jest ./tests/server.tests/rest.tests/auth.rest.test --env=node && jest ./tests/server.tests/rest.tests/chat.rest.test --env=node",
     "test:client": "jest ./tests/client.tests --env=jsdom --detectOpenHandles",
