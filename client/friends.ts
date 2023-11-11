@@ -1,15 +1,15 @@
-import { v4 as uuidV4 } from 'uuid';
+iimport { v4 as uuidV4 } from 'uuid';
 
-export interface Friend {
+export interface IFriend {
   id: string;
   displayName: string;
   email: string;
   invited: boolean;
 }
 
-let friends: Friend[];
+let friends: IFriend[];
 
-function loadFriends(): Friend[] {
+function loadFriends(): IFriend[] {
   // TODO: read friends from local storage
   return [];
 }
@@ -18,7 +18,7 @@ function saveFriends(): void {
   // TODO: save friends to local storage
 }
 
-function createRawFriendElement(friend: Friend): HTMLElement {
+function createRawFriendElement(friend: IFriend): HTMLElement {
   // TODO: create an HTML friend element without any listeners attached
   return new HTMLElement();
 }
