@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="author" content="FirstName LastName (andrewid)" />
@@ -9,24 +8,29 @@
   <link href="../styles.css" rel="stylesheet" type="text/css" />
   <script src="../auth.ts" type="module" defer=""></script>
   <title>YACA Authentication</title>
-  <style>
-    /* TODO */
-  </style>
 </head>
-
 <body>
-  <p>TODO...</p>
-  <p>Required elements:</p>
-  <ul>
-    <li>An input element with id="homeBtn"</li>
-    <li>An input element with id="logoutBtn"</li>
-    <li>A form element with id="authForm" to contain the registration/login inputs</li>
-    <li>An input element with type="text" and id="myName"</li>
-    <li>An input element with type="email" and id="myEmail"</li>
-    <li>An input element with type="password" and id="myPassword"
-    <li>An input element with type="submit" and id="loginBtn"</li>
-    <li>An input element with type="submit" and id="registerBtn"</li>
-  </ul>
+  <div class="header">
+    <a href="./index.html">
+      <div class="button">Home</div>
+    </a>
+    <div class="chatTitle">Enter Chat Room</div>
+    <div class="button" style="visibility: hidden"></div>
+  </div>
+  <form class="body-container">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" 
+    placeholder="Required for registration" required>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" 
+    placeholder="me@somedomain.com" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" 
+    placeholder="a strong password" required>
+    <div class="button-container">
+      <button class="button">Register</button>
+      <button class="button">Login</button>
+    </div>
+  </form>
 </body>
-
 </html>

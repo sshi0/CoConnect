@@ -1,10 +1,8 @@
-// Extracts all the secrets and environment variables from the .env file
-
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-port const PORT: number = process.env.PORT ? Number(process.env.PORT) : 3000; // defaults to 3000
+const PORT: number = process.env.PORT ? Number(process.env.PORT) : 3000; // defaults to 3000
 
 export const DB_CONN_STR: string =
   ENV === 'DEV'
