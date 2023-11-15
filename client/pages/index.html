@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="author" content="FirstName LastName (andrewid)" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="18351 class project" />
-  <link href="../styles.css" rel="stylesheet" type="text/css" />
-  <title>YACA Home</title>
-  <style>
-    /* TODO */
-  </style>
+    <meta charset="utf-8" />
+    <meta name="author" content="FirstName LastName (andrewid)" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="18351 class project" />
+    <link href="../styles.css" rel="stylesheet" type="text/css" />
+    <title>YACA Home</title>
 </head>
-
 <body>
-  <p>
-    <TODO... </p>
-      <p>Required elements:</p>
-      <ul>
-        <li>An input element with id="friendsBtn" that goes to the friends page</li>
-        <li>An input element with id="chatBtn" that goes to the chat room page</li>
-        <li>An input element with id="authBtn" that goes to the authentication page</li>
-      </ul>
+    <div class="header">
+        <div class="button" style="visibility: hidden"></div>
+        <div class="chatTitle">Welcome to YACA</div>
+        <div class="button" style="visibility: hidden"></div>
+    </div>
+    <div class="body-container">
+        <a href="./auth.html">
+            <button class="button welcomebutton">Login</button>
+        </a>
+        <a href="./friends.html">
+            <button class="button welcomebutton">Friend List</button>
+        </a>
+        <a href="./chat.html">
+            <button class="button welcomebutton">Chat</button>
+        </a>
+    </div>
 </body>
-
 </html>

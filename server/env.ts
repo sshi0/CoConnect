@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-port const PORT: number = process.env.PORT ? Number(process.env.PORT) : 3000; // defaults to 3000
+export const PORT: number = process.env.PORT ? Number(process.env.PORT) : 3000; // defaults to 3000
+
+export const ENV : string = process.env.ENV ?? 'DEV';
 
 export const DB_CONN_STR: string =
   ENV === 'DEV'
@@ -12,8 +14,6 @@ export const DB_CONN_STR: string =
     : ENV === 'PROD'
     ? (process.env.DB_URL ?? 'unknown') + (process.env.PROD_DB ?? 'unknown')
     : 'unknown';
-
-export const PORT: number = Number(process.env.PORT) ?? 3000; // defaults to 3000
 
 export const JWT_KEY: string = process.env.JWT_KEY ?? 'someDefaultKey';
 

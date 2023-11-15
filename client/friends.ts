@@ -1,4 +1,4 @@
-iimport { v4 as uuidV4 } from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 
 export interface IFriend {
   id: string;
