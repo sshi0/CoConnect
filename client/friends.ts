@@ -8,18 +8,19 @@ export interface IFriend {
 }
 
 let friends: IFriend[] = loadFriends();
-const addFriendButton = document.getElementById('friendListContainer');
+const addFriendButton = document.getElementById('addFriendButton');
 if (addFriendButton) addFriendButton.addEventListener('click', onAddFriend);
 
 function loadFriends(): IFriend[] { 
   // read friends from local storage
   const friendList = localStorage.getItem('friends');
+  let parsedFriends: IFriend[];
   if (friendList) {
-    friends = JSON.parse(friendList);
+    parsedFriends = JSON.parse(friendList);
   } else {
-    friends = []
+    parsedFriends = []
   }
-  return friends;
+  return parsedFriends;
 }
 
 function saveFriends(): void { 
