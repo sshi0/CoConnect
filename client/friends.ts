@@ -9,8 +9,8 @@ export interface IFriend {
 
 let friends: IFriend[] = loadFriends();
 loadFriendsIntoDocument();
-const addFriendButton = document.getElementById('addFriendButton');
-if (addFriendButton) addFriendButton.addEventListener('click', onAddFriend);
+const addFriendForm = document.getElementById('addFriend');
+if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
 
 function loadFriends(): IFriend[] { 
   // read friends from local storage
