@@ -9,8 +9,8 @@ export interface IFriend {
 
 let friends: IFriend[] = loadFriends();
 loadFriendsIntoDocument();
-const addFriendForm = document.getElementById('addFriend');
-if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
+const addFriendButton = document.getElementById('addFriendButton');
+if (addFriendButton) addFriendButton.addEventListener('click', onAddFriend);
 
 function loadFriends(): IFriend[] { 
   // read friends from local storage
@@ -54,7 +54,7 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
       <input type="checkbox" class="inviteCheck">
       Name: ${friend.displayName}
     </div>
-    <button class="crossButton" id="removeFriendButton">&times</button>
+    <button class="button crossButton" id="removeFriendButton">&times</button>
     <div class="friendDets">Email:${friend.email}</div>
   `;
   return newFriend;
@@ -65,7 +65,7 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   console.log(friendEmnt.id);
   let friend = friends.find(f => f.id === friendEmnt.id);
   const delButton: HTMLButtonElement | null = 
-                   friendEmnt.querySelector('button');
+                   friendEmnt.querySelector('input[type="button"]');
   const invButton: HTMLInputElement | null = 
                    friendEmnt.querySelector('input[type="checkbox"]');
   if (invButton && friend)
@@ -84,6 +84,7 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
           }
       }
     });
+  console.log(delButton.id);
   if (delButton) {
     delButton.addEventListener('click', () => {
       const friendElement = document.getElementById(friendEmnt.id);
