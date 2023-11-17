@@ -11,6 +11,8 @@ let friends: IFriend[] = loadFriends();
 loadFriendsIntoDocument();
 const addFriendForm = document.getElementById('addFriend');
 if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
+const clearfriendsButton = document.getElementById('clearfriendsButton');
+if (clearfriendsButton) clearfriendsButton.addEventListener('click', onClearFriends);
 
 function loadFriends(): IFriend[] { 
   // read friends from local storage
@@ -88,10 +90,15 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
     delButton.addEventListener('click', () => {
       const friendElement = document.getElementById(friendEmnt.id);
       if (friendElement) {
-        alert('Are you sure you want to remove this friend?');
-        onDeleteFriend(friendEmnt.id);
-        saveFriends();
-        loadFriendsIntoDocument();
+        const delConfirm = confirm('Are you sure you want to remove this friend?')
+        if (delConfirm) {
+          onDeleteFriend(friendEmnt.id);
+          saveFriends();
+          loadFriendsIntoDocument();
+        }
+        else {
+          return friendEmnt;
+        }
       }
     });
   }
@@ -144,6 +151,17 @@ function onAddFriend(): void {
     // Reset the form after adding a friend
     displayNameInput.value = '';
     emailInput.value = '';
+  }
+}
+
+function onClearFriends(): void {
+  // event handler to create a new friend from form info and 
+  // append it to right HTML element in the document
+  const clearConfirm = confirm('Are you sure you want to clear all friends?');
+  if (clearConfirm) {
+    friends = [];
+    saveFriends();
+    loadFriendsIntoDocument();
   }
 }
 
