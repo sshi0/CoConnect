@@ -47,8 +47,13 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
   const newFriend = document.createElement('div');
   newFriend.setAttribute('class', 'friend');
   newFriend.setAttribute('id', friend.id);
+  if (friend.invited) newFriend.setAttribute('invited', 'yes');
+  else newFriend.setAttribute('invited', 'no');
   newFriend.innerHTML = `
-    <div class="friendDets">Name: ${friend.displayName}</div>
+    <div class="friendDets">
+      <input type="checkbox" class="inviteCheck">
+      Name: ${friend.displayName}
+    </div>
     <button class="button crossButton" id="removeFriendButton">&times</button>
     <div class="friendDets">Email:${friend.email}</div>
   `;
@@ -57,8 +62,29 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
 
 function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   // add required listeners to the HTML friend element
+  console.log(friendEmnt.id);
+  let friend = friends.find(f => f.id === friendEmnt.id);
   const delButton: HTMLButtonElement | null = 
-                   friendEmnt.querySelector('button');
+                   friendEmnt.querySelector('input[type="button"]');
+  const invButton: HTMLInputElement | null = 
+                   friendEmnt.querySelector('input[type="checkbox"]');
+  if (invButton && friend)
+    invButton.checked = friend.invited;
+    invButton.addEventListener('change', () => {
+      friend.invited = invButton.checked;
+      if (friend.invited) {
+        const subject = 'I am inviting you to join YACA to chat with us!';
+        const mailtoLink = 
+        `mailto:${friend.email}?subject=${encodeURIComponent(subject)}`;
+        const newWindow: Window | null = window.open(
+        mailtoLink, '_blank', 
+        'toolbar=no,scrollbars=no,width=300px,height=400px');
+        if (newWindow) { // Shift focus on the new window
+          newWindow.focus();
+          }
+      }
+    });
+  console.log(delButton.id);
   if (delButton) {
     delButton.addEventListener('click', () => {
       const friendElement = document.getElementById(friendEmnt.id);
