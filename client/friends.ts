@@ -65,7 +65,7 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   console.log(friendEmnt.id);
   let friend = friends.find(f => f.id === friendEmnt.id);
   const delButton: HTMLButtonElement | null = 
-                   friendEmnt.querySelector('crossButton');
+                   friendEmnt.querySelector('button');
   const invButton: HTMLInputElement | null = 
                    friendEmnt.querySelector('input[type="checkbox"]');
   if (invButton && friend)
