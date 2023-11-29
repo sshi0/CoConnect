@@ -60,7 +60,7 @@ jobs:
       SRV_ID: ${{ secrets.SRV_ID }}
       SRV_KEY: ${{ secrets.SRV_KEY }}
       SRV_TK: ${{ secrets.SRV_TK }}
-    if: false
+    if: true
     needs: build-test
     runs-on: ubuntu-latest
     steps:
