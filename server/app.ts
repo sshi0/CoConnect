@@ -80,7 +80,7 @@ class App {
   private configureControllers(controllers: Controller[]) {
     //  Controller.io = this.io; // for later
     controllers.forEach((controller) => {
-      // TODO
+      this.app.use(controller.path, controller.router);
     });
   }
 

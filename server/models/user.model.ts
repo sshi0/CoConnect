@@ -21,13 +21,15 @@ export class User implements IUser {
 
   async join(): Promise<IUser> {
     // join YACA as a user, serving the register request
-    // TODO
-    return { credentials: { username: '', password: 'obfuscated' } };
+    const username = this.credentials.username;
+    const password = await bcrypt.hash(this.credentials.password, 10);
+    await DAO._db.saveUser({ credentials: { username, password }, extra: this.extra });
+    return user;
   }
 
   async login(): Promise<IUser> {
     // login to  YACA with user credentials
-    // TODO
+    
     return { credentials: { username: '', password: 'obfuscated' } };
   }
 
@@ -41,5 +43,20 @@ export class User implements IUser {
     // get the user having a given username
     // TODO
     return null;
+  }
+
+  static async validateUser(credentials: ILogin): Promise<IUser> {
+    // validate the credentials of a user
+    const user = await User.getUserForUsername(credentials.username);
+    if (!user) {
+      throw new YacaError('Invalid Username', 'User not found');
+    }
+    else {
+      const match = await bcrypt.compare(credentials.password, user.credentials.password);
+      if (!match) {
+        throw new YacaError('Password Error', 'Incorrect password');
+      }
+    }
+    return user;
   }
 }

@@ -62,28 +62,20 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
 
 function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   // add required listeners to the HTML friend element
-  console.log(friendEmnt.id);
-  let friend = friends.find(f => f.id === friendEmnt.id);
+  const friend = friends.find(f => f.id === friendEmnt.id);
   const delButton: HTMLButtonElement | null = 
                    friendEmnt.querySelector('button');
   const invButton: HTMLInputElement | null = 
                    friendEmnt.querySelector('input[type="checkbox"]');
-  if (invButton && friend)
+  if (invButton && friend) {
     invButton.checked = friend.invited;
     invButton.addEventListener('change', () => {
       friend.invited = invButton.checked;
       if (friend.invited) {
-        const subject = 'I am inviting you to join YACA to chat with us!';
-        const mailtoLink = 
-        `mailto:${friend.email}?subject=${encodeURIComponent(subject)}`;
-        const newWindow: Window | null = window.open(
-        mailtoLink, '_blank', 
-        'toolbar=no,scrollbars=no,width=300px,height=400px');
-        if (newWindow) { // Shift focus on the new window
-          newWindow.focus();
-          }
+        onInviteFriend(friend);
       }
     });
+  }
   if (delButton) {
     delButton.addEventListener('click', () => {
       const friendElement = document.getElementById(friendEmnt.id);
@@ -153,10 +145,16 @@ function onDeleteFriend(id: String): void {
   friends = friends.filter((friend) => friend.id !== id);
 }
 
-function onInviteFriend(): void {
+function onInviteFriend(friend: IFriend): void {
   // event handler to invite a friend by email when a checkbox is checked
+  const subject = 'I am inviting you to join YACA to chat with us!';
+  const mailtoLink = 
+  `mailto:${friend.email}?subject=${encodeURIComponent(subject)}`;
+  const newWindow: Window | null = window.open(
+  mailtoLink, '_blank', 
+  'toolbar=no,scrollbars=no,popup=yes,width=300px,height=400px');
+  if (newWindow) { // Shift focus on the new window
+    newWindow.focus();
+  }
 }
 
-// TODO
-
-// Split into multiple submodules if appropriate
