@@ -4,10 +4,28 @@ import { IUser } from '../common/user.interface';
 
 async function login(user: IUser) {
   // logs the user in
+  try {
+    const res: AxiosResponse = await axios.request(
+      {
+      method: 'post',
+      headers: { Authorization: `Bearer ${token}` },
+      data: user.credentials.password,
+      url: '/auth/users/' + user.credentials.username,
+      validateStatus: () => true
+      }
+    );
+    if (res) {
+      alert('Login successful, welcome to YACA ' + user.extra);
+    };
+  }
+  catch(err) {
+    alert('Login failed, error message: ' + err.message);
+  }
 }
 
 async function register(newUser: IUser) {
   // register the user
+  
 }
 
 async function onSubmitForm(e: SubmitEvent) {

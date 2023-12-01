@@ -27,8 +27,8 @@ export default class AuthController extends Controller {
   public initializeRoutes(): void {
     // this should define the routes handled by the middlewares authPage, register, and login
     this.router.get('/', this.authPage);
-    this.router.post('/users', this.login);
-    this.router.post('/users:username', this.register);
+    this.router.post('/users', this.register);
+    this.router.post('/users/:username', this.login);
   }
 
   public async authPage(req: Request, res: Response) {
@@ -37,47 +37,52 @@ export default class AuthController extends Controller {
 
   public async register(req: Request, res: Response) {
     try {
-      const { username, password, extra } = req.body;
-      const newUser = new User({ username, password }, extra);
-
+      const username = req.body.credentials.username;
+      const password = req.body.credentials.password;
+      const extra = req.body.extra;
+      const newUser = new User( { username, password });
+      newUser.extra = extra;
+      
       const user = await newUser.join(); // checks if user already registered
-      res.status(201).json({messages:"Successfully Registered"})); // join success, sends success response
+      res.status(201).json({messages:"Successfully Registered"}); // join success, sends success response
     }
-    catch (err: Error) {
-      if (isClientError(err)) {
-        res.status(400).json({messages:"User already exists"})); // user already exists, sends error response
-      } else if (isUnknownError(err)) {
-        res.status(500).json({messages:"Unknown Error"})); // unknown error, sends error response
+    catch (err) {
+      if (isClientError(err as Error)) {
+        res.status(400).json({messages:"User already exists"}); // user already exists, sends error response
+      } else if (isUnknownError(err as Error)) {
+        res.status(500).json({messages:"Unknown Error"}); // unknown error, sends error response
       }
     }
   }
 
-  public login(req: Request, res: Response) {
+  public async login(req: Request, res: Response) {
     // Middleware to log users in
     try {
       const credentials: ILogin = {
-        username: req.url[1],
+        username: req.params.username,
         password: req.body.password
       };
-      const user = await User.validateUser(credentials);
+      console.log('credentials: ' + credentials.username + ' ' + credentials.password);
+      const newUser = new User(credentials);
+      const user = await newUser.login();
       if (user) {
         const tokenPayload: ILogin = user.credentials;
         const token = jwt.sign(tokenPayload, secretKey, {expiresIn: tokenExpiry});
-        const success: ISuccess = {
+        const successRes: ISuccess = {
           name: 'LoginSuccess',
           message: 'User is authenticated',
           authorizedUser: user.credentials.username,
           payload: {user, token}
         };
+        res.status(200).json(successRes); // login success, sends success response
       }
-      res.status(200).json({messages:"Successfully Logged In"}); // login success, sends success response
     }
-    catch (err: Error){
-      if (isClientError(err)) {
-        res.status(400).json({messages:"Invalid Credentials"}); // invalid credentials, sends error response
+    catch (err){
+      if (isClientError(err as Error)) {
+        res.status(400).json(err); // invalid credentials, sends error response
       }
-      else if (isUnknownError(err)) {
-        res.status(500).json({messages:"Unknown Error"}); // unknown error, sends error response
+      else if (isUnknownError(err as Error)) {
+        res.status(500).json(err); // unknown error, sends error response
       }
     }
   }

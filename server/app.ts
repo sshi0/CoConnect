@@ -85,7 +85,9 @@ class App {
   }
 
   public serverLogger(req: Request, res: Response, next: NextFunction) {
-    // TODO
+    console.log(req.method + ' ' + req.url)
+    console.log(res.statusCode)
+    console.log(req.body)
     next();
   }
 

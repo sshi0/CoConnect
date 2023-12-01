@@ -12,7 +12,7 @@ import FriendsController from './controllers/friends.controller';
 
 const app = new App(
   [
-    // TODO: Add initialized controllers here
+    new AuthController('/auth'),
   ],
   {
     clientDir: path.join(__dirname, '../.dist/client'),
