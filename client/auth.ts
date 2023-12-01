@@ -1,6 +1,14 @@
 import axios, { AxiosResponse } from 'axios';
 import { IResponse } from '../common/server.responses';
 import { IUser } from '../common/user.interface';
+import {
+  ISuccess,
+  YacaError,
+  UnknownError,
+  isClientError,
+  isISuccess,
+  isUnknownError
+} from '../common/server.responses';
 
 async function login(user: IUser) {
   // logs the user in
@@ -8,24 +16,54 @@ async function login(user: IUser) {
     const res: AxiosResponse = await axios.request(
       {
       method: 'post',
-      headers: { Authorization: `Bearer ${token}` },
-      data: user.credentials.password,
+      //headers: { Authorization: `Bearer ${jwtToken}` },
+      data: {password: user.credentials.password},
       url: '/auth/users/' + user.credentials.username,
       validateStatus: () => true
       }
     );
     if (res) {
-      alert('Login successful, welcome to YACA ' + user.extra);
+      alert('Login successful, welcome back!');
     };
   }
   catch(err) {
-    alert('Login failed, error message: ' + err.message);
+    if (err.response.status === 400) {
+      alert('Login failed, YACA Error: ' + err.response.data.messages);
+    }
+    else if (err.response.status === 500) {
+      alert('Login failed, Unknown Error: ' + err.message);
+    }
   }
 }
 
 async function register(newUser: IUser) {
   // register the user
-  
+  try {
+    const res: IResponse = await axios.request(
+      {
+      method: 'post',
+      // headers: { Authorization: `Bearer ${token}` },
+      data: newUser,
+      url: '/auth/users',
+      validateStatus: () => true
+      }
+    );
+    console.log("res: " + res);
+    console.log("isISuccess(res): " + isISuccess(res));
+    console.log("isClientError(res): " + isClientError(res as Error));
+    if (isISuccess(res)) {
+      alert('Registration successful, welcome to YACA ' + newUser.extra);
+    }
+    else if (isClientError(res)) {
+      alert('Registration failed, YACA Error: ' + res);
+    }
+    else {
+      alert('Registration failed, Unknown Error: ' + res);
+    }
+  }
+  catch(err) {
+    console.log("Unknown Error: " + err.message);
+  }
 }
 
 async function onSubmitForm(e: SubmitEvent) {

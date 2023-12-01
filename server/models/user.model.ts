@@ -21,6 +21,16 @@ export class User implements IUser {
 
   async join(): Promise<IUser> {
     // join YACA as a user, serving the register request
+    console.log('Display Name: ' + this.extra + ' ' + !this.extra);
+    if (!this.credentials.username) {
+      throw new YacaError('Username empty', 'Username cannot be empty');
+    }
+    else if (!this.credentials.password) {
+      throw new YacaError('Password empty', 'Password cannot be empty');
+    }
+    else if (!this.extra) {
+      throw new YacaError('Display Name empty', 'Choose a display name');
+    }
     const username = this.credentials.username;
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(this.credentials.password, salt);
@@ -33,6 +43,12 @@ export class User implements IUser {
 
   async login(): Promise<IUser> {
     // login to  YACA with user credentials
+    if (this.credentials.username == '') {
+      throw new YacaError('Username empty', 'Username cannot be empty');
+    }
+    else if (this.credentials.password == '') {
+      throw new YacaError('Password empty', 'Password cannot be empty');
+    }
     const user = await User.getUserForUsername(this.credentials.username);
     console.log('DB Username: ' + user?.credentials.username)
     console.log('DB Password: ' + user?.credentials.password)

@@ -39,18 +39,19 @@ export default class AuthController extends Controller {
     try {
       const username = req.body.credentials.username;
       const password = req.body.credentials.password;
-      const extra = req.body.extra;
       const newUser = new User( { username, password });
-      newUser.extra = extra;
+      newUser.extra = req.body.extra;
       
       const user = await newUser.join(); // checks if user already registered
       res.status(201).json({messages:"Successfully Registered"}); // join success, sends success response
     }
     catch (err) {
+      console.log("Error: " + err);
+      console.log(isClientError(err as Error));
       if (isClientError(err as Error)) {
-        res.status(400).json({messages:"User already exists"}); // user already exists, sends error response
+        res.status(400).json(err as YacaError); // user already exists, sends error response
       } else if (isUnknownError(err as Error)) {
-        res.status(500).json({messages:"Unknown Error"}); // unknown error, sends error response
+        res.status(500).json(err as UnknownError); // unknown error, sends error response
       }
     }
   }
