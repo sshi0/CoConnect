@@ -80,12 +80,13 @@ export default class AuthController extends Controller {
       }
     }
     catch (err){
-      if (isClientError(err as Error)) {
-        res.status(400).json(err); // invalid credentials, sends error response
+      if (err instanceof Error) {
+        if (isClientError(err)) {
+          res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
+        } 
+        if (isUnknownError(err)) {
+          res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
+        }
       }
-      else if (isUnknownError(err as Error)) {
-        res.status(500).json(err); // unknown error, sends error response
-      }
-    }
   }
 }
