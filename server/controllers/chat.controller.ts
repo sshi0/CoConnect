@@ -18,16 +18,17 @@ import {
 export default class ChatController extends Controller {
   public constructor(path: string) {
     super(path);
+    this.initializeRoutes();
   }
 
   public initializeRoutes(): void {
     // this should define the routes handled by the middlewares chatRoomPage,
     // authenticate, getAllUsers, getUser, postMessage, and getAllMessages
-    // TODO
+    this.router.get('/', this.chatRoomPage);
   }
 
   public chatRoomPage(req: Request, res: Response) {
-    // res.redirect('/pages/chat.html');
+    res.redirect('/pages/chat.html');
   }
 
   public authenticate(req: Request, res: Response, next: NextFunction) {

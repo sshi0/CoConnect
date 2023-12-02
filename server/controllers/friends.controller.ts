@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 export default class FriendsController extends Controller {
   public constructor(path: string) {
     super(path);
+    this.initializeRoutes();
   }
 
   // Note that friends are not stored by the server, but only on the client
@@ -14,9 +15,10 @@ export default class FriendsController extends Controller {
 
   public initializeRoutes(): void {
     // this should define the route handled by the middleware friendsPage
+    this.router.get('/', this.friendsPage);
   }
 
   public friendsPage(req: Request, res: Response) {
-    // res.redirect('/pages/friends.html');
+    res.redirect('/pages/friends.html');
   }
 }

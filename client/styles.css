@@ -290,3 +290,11 @@ input {
     width: 80%;
     padding-bottom: 1vmin;
 }
+.aboutText {
+    color: white;
+    font-size: 20px;
+    text-align: left;
+    justify-self: center;
+    font-family:system-ui;
+    padding: 1vmin;
+}
