@@ -28,6 +28,6 @@ export default class HomeController extends Controller {
 
   public aboutPage(req: Request, res: Response): void {
     // const about: 'This is YACA Server';
-    // TODO: generate and serve plain html containing the about string
+    res.redirect('/pages/about.html');
   }
 }

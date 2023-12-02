@@ -6,7 +6,7 @@ import { ILogin, IUser } from '../../common/user.interface';
 import { User } from '../models/user.model';
 import { ChatMessage } from '../models/chatMessage.model';
 import { IChatMessage } from '../../common/chatMessage.interface';
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import {
   ISuccess,
   YacaError,
@@ -20,6 +20,8 @@ export default class ChatController extends Controller {
     super(path);
     this.initializeRoutes();
   }
+
+  public router: Router = Router();
 
   public initializeRoutes(): void {
     // this should define the routes handled by the middlewares chatRoomPage,

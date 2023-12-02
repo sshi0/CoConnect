@@ -13,6 +13,9 @@ import FriendsController from './controllers/friends.controller';
 const app = new App(
   [
     new AuthController('/auth'),
+    new ChatController('/chat'),
+    new FriendsController('/friends'),
+    new HomeController('/'),
   ],
   {
     clientDir: path.join(__dirname, '../.dist/client'),

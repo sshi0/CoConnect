@@ -1,13 +1,16 @@
 // Controller serving the friends page and handling friend management
 
 import Controller from './controller';
-import { Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
 
 export default class FriendsController extends Controller {
   public constructor(path: string) {
     super(path);
     this.initializeRoutes();
   }
+
+  public router: Router = Router();
+
 
   // Note that friends are not stored by the server, but only on the client
   // No database access or request handling is needed
