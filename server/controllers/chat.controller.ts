@@ -4,7 +4,7 @@
 import Controller from './controller';
 import { ILogin, IUser } from '../../common/user.interface';
 import { User } from '../models/user.model';
-import { ChatMessage } from '../models/message.model';
+import { ChatMessage } from '../models/chatMessage.model';
 import { IChatMessage } from '../../common/chatMessage.interface';
 import { NextFunction, Request, Response } from 'express';
 import {

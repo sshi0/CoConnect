@@ -82,6 +82,16 @@ input {
     border-radius: 5px;
     box-shadow: 5px 5px 5px black;
 }
+.clearfriendsButton {
+    color: red;
+    font-size: 30px;
+    font-weight: bold;
+}
+.clearFriends {
+    width: 100%;
+    text-align: center;
+    padding-top: 3vh;
+}
 .crossButton {
     color: red;
     font-size: 30px;
@@ -121,6 +131,10 @@ input {
     color: white;
 }
 .crossButton:hover {
+    background-color: red;
+    color: white;
+}
+.clearfriendsButton:hover {
     background-color: red;
     color: white;
 }

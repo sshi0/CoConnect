@@ -4,7 +4,7 @@
 import { IChatMessage } from './chatMessage.interface';
 
 export interface ServerToClientEvents {
-  newMessage: (message: IChatMessage) => void;
+  newChatMessage: (chatMessage: IChatMessage) => void;
 }
 
 export interface ClientToServerEvents {

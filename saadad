@@ -1,0 +1,120 @@
+[33mcommit 5c8bffe5faa7e44e3cf9a60ad893c97f252f0733[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Hakan Erdogmus <hakane@andrew.cmu.edu>
+Date:   Tue Nov 7 18:00:15 2023 -0500
+
+    Update package.json
+    
+    patch watch script
+
+[33mcommit 4ec4bc2aa9ee50644a464b232ba29f340873535e[m
+Merge: 489a42e 600a3d2
+Author: Hakan Erdogmus <hakane@andrew.cmu.edu>
+Date:   Tue Nov 7 17:59:37 2023 -0500
+
+    Merge pull request #1 from cmu-fsd/erdogmush-patch-1
+    
+    Update env.ts
+
+[33mcommit 600a3d2a6124e376ff5aef9a838049f554590639[m[33m ([m[1;31morigin/erdogmush-patch-1[m[33m)[m
+Author: Hakan Erdogmus <hakane@andrew.cmu.edu>
+Date:   Tue Nov 7 17:58:05 2023 -0500
+
+    Update env.ts
+
+[33mcommit 489a42e639d8f412a0deb917382e10d04772ef88[m
+Author: Hakan Erdogmus <hakane@andrew.cmu.edu>
+Date:   Tue Nov 7 17:57:17 2023 -0500
+
+    Update .template.env
+
+[33mcommit ff3595d360d3c5be9ed06ebb6c1435e896716a4d[m
+Author: unknown <steven01.shi@hotmail.com>
+Date:   Mon Nov 6 13:57:11 2023 -0500
+
+    Improved for normal desktop
+
+[33mcommit fe1e0096844fd5a2cd9b805cc8e77a29bfcd7009[m
+Author: unknown <steven01.shi@hotmail.com>
+Date:   Sun Nov 5 20:26:10 2023 -0500
+
+    Updated Home Page
+
+[33mcommit 164d473862da3b2683bddd28b89bc9df41d4d083[m
+Author: unknown <steven01.shi@hotmail.com>
+Date:   Sun Nov 5 16:13:32 2023 -0500
+
+    Added scrollbar for chat and hover
+
+[33mcommit 30c8e4da60763526c83802807a0a4f55dda1be31[m
+Author: unknown <steven01.shi@hotmail.com>
+Date:   Sun Nov 5 15:53:57 2023 -0500
+
+    Updated design, improved constitency and UI
+
+[33mcommit 2ba5335c56d29dab8441316c67f42012e5ba148b[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Fri Nov 3 16:55:48 2023 +0800
+
+    Create friends.html
+
+[33mcommit d36020c7a413bd313c8a035337b52d5e45c7c54c[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Fri Nov 3 16:55:32 2023 +0800
+
+    Create auth.html
+
+[33mcommit a681d62c08e87b99ada7e584fa7f926de7badb66[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Fri Nov 3 16:55:17 2023 +0800
+
+    Create chat.html
+
+[33mcommit 0033f8937ccea2956be550c12a5ebabf1c060c47[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Fri Nov 3 16:55:00 2023 +0800
+
+    Update styles.css
+
+[33mcommit a5a932fd975c126ba844bea7152d71ec9e0e4387[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Fri Nov 3 16:54:46 2023 +0800
+
+    Update index.html
+
+[33mcommit 5c9e20927313167fd717325966887e0c34986f4b[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Fri Nov 3 14:17:47 2023 +0800
+
+    Create styles.css
+
+[33mcommit b14ec415dbb939d04b77c86a097db4d9fc9cbfa4[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Fri Nov 3 14:17:34 2023 +0800
+
+    Create index.html
+
+[33mcommit 0bf038a554c2946fcecefcc0d0a562c6b8dd6199[m
+Author: Hakan Erdogmus <hakane@andrew.cmu.edu>
+Date:   Thu Nov 2 18:32:47 2023 -0400
+
+    Patched server.responses.ts
+
+[33mcommit 4b182c792faa95fd9c38e7917c31a3e52383c076[m
+Author: Steven Shi <95527459+sshi0@users.noreply.github.com>
+Date:   Wed Oct 25 13:33:21 2023 -0400
+
+    Update .template.env
+    
+    My first commit
+
+[33mcommit aa64ca7932f1d08d6c7fff7800f26bb21da8915b[m
+Author: github-classroom[bot] <66690702+github-classroom[bot]@users.noreply.github.com>
+Date:   Wed Oct 25 16:57:16 2023 +0000
+
+    add online IDE url; add deadline
+
+[33mcommit 5c8b21905390684646d1d6fc75b669d154608a24[m
+Author: github-classroom[bot] <66690702+github-classroom[bot]@users.noreply.github.com>
+Date:   Wed Oct 25 16:57:14 2023 +0000
+
+    Initial commit
