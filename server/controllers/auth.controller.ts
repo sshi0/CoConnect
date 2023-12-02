@@ -46,12 +46,12 @@ export default class AuthController extends Controller {
       res.status(201).json({messages:"Successfully Registered"}); // join success, sends success response
     }
     catch (err) {
-      console.log("Error: " + err);
-      console.log(isClientError(err as Error));
-      if (isClientError(err as Error)) {
-        res.status(400).json(err as YacaError); // user already exists, sends error response
-      } else if (isUnknownError(err as Error)) {
-        res.status(500).json(err as UnknownError); // unknown error, sends error response
+      if (err instanceof Error) {
+        if (isClientError(err)) {
+          res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
+        } else if (isUnknownError(err as Error)) {
+          res.status(500).json(err as UnknownError); // unknown error, sends error response
+        }
       }
     }
   }
