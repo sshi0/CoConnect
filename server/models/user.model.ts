@@ -22,6 +22,7 @@ export class User implements IUser {
   async join(): Promise<IUser> {
     // join YACA as a user, serving the register request
     console.log('Display Name: ' + this.extra + ' ' + !this.extra);
+    const isValidPassword = await User.checkPassword(this.credentials);
     if (!this.credentials.username) {
       throw new YacaError('Username empty', 'Username cannot be empty');
     }
@@ -30,6 +31,9 @@ export class User implements IUser {
     }
     else if (!this.extra) {
       throw new YacaError('Display Name empty', 'Choose a display name');
+    }
+    else if (!isValidPassword) {
+      throw new YacaError('Invalid Password', 'Password not strong enough');
     }
     const username = this.credentials.username;
     const salt = await bcrypt.genSalt(10);
@@ -80,5 +84,19 @@ export class User implements IUser {
   static async validateUser(credentials: ILogin): Promise<IUser> {
     // validate the credentials of a user
     return {credentials};
+  }
+
+  static async checkPassword(credentials: ILogin): Promise<boolean> {
+    // check the password of a user
+    if (credentials.password.length < 4) {return false}
+    if (credentials.password.toLowerCase() == credentials.password) {return false}
+    if (credentials.password.toUpperCase() == credentials.password) {return false}
+    if (!/\d/.test(credentials.password)) {return false}
+    if (!/\W/.test(credentials.password)) {return false}
+    const special = /['!', '@', '#', '$', '%', '^', '&', '~', '*', '-', '+']/;
+    if (!special.test(credentials.password)) {return false}
+    const invalid = /[^a-zA-Z\d\!\@\#\$\%\^\&\~\*\-\+]/;
+    if (invalid.test(credentials.password)) {return false}
+    return true;
   }
 }
