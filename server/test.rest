@@ -9,8 +9,6 @@ Content-Type: application/json
 "extra": "hakan"
 }
 
-###
-
 // create a user serra
 POST http://localhost:8080/auth/users
 Content-Type: application/json
