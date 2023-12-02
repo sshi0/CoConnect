@@ -13,33 +13,40 @@ import {
 async function login(user: IUser) {
   // logs the user in
   try {
-    const res: AxiosResponse = await axios.request(
+    const res = await axios.request(
       {
       method: 'post',
-      //headers: { Authorization: `Bearer ${jwtToken}` },
+      // headers: { Authorization: `Bearer ${token}` },
       data: {password: user.credentials.password},
-      url: '/auth/users/' + user.credentials.username,
+      url: ('/auth/users/'+ user.credentials.username),
       validateStatus: () => true
       }
     );
-    if (res) {
-      alert('Login successful, welcome back!');
-    };
+    console.log(res.data);
+    if (res.status === 200) {
+      const data: ISuccess = res.data;
+      if (data) {
+        alert('Login successful, welcome back!');
+      }
+    }
+    else if (res.status === 400) {
+      const data: YacaError = res.data;
+      alert('Registration failed, YACA Error: ' + data.message);
+    }
+    else {
+      const data: UnknownError = res.data;
+      alert('Registration failed, Unknown Error: ' + data.message);
+    }
   }
   catch(err) {
-    if (err.response.status === 400) {
-      alert('Login failed, YACA Error: ' + err.response.data.messages);
-    }
-    else if (err.response.status === 500) {
-      alert('Login failed, Unknown Error: ' + err.message);
-    }
+    console.log("Unknown Error: " + err.message);
   }
 }
 
 async function register(newUser: IUser) {
   // register the user
   try {
-    const res: IResponse = await axios.request(
+    const res = await axios.request(
       {
       method: 'post',
       // headers: { Authorization: `Bearer ${token}` },
@@ -48,14 +55,16 @@ async function register(newUser: IUser) {
       validateStatus: () => true
       }
     );
-    console.log("res: " + res);
-    console.log("isISuccess(res): " + isISuccess(res));
-    console.log("isClientError(res): " + isClientError(res as Error));
-    if (isISuccess(res)) {
+    if (res.status === 201) {
       alert('Registration successful, welcome to YACA ' + newUser.extra);
     }
-    else if (isClientError(res)) {
-      alert('Registration failed, YACA Error: ' + res);
+    else if (res.status === 400) {
+      const data: YacaError = res.data;
+      alert('Registration failed, YACA Error: ' + data.message);
+    }
+    else if (res.status === 500){
+      const data: UnknownError = res.data;
+      alert('Registration failed, Unknown Error: ' + data.message);
     }
     else {
       alert('Registration failed, Unknown Error: ' + res);

@@ -43,14 +43,15 @@ export default class AuthController extends Controller {
       newUser.extra = req.body.extra;
       
       const user = await newUser.join(); // checks if user already registered
-      res.status(201).json({messages:"Successfully Registered"}); // join success, sends success response
+      res.status(201).json(user); // join success, sends success response
     }
     catch (err) {
       if (err instanceof Error) {
         if (isClientError(err)) {
           res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
-        } else if (isUnknownError(err as Error)) {
-          res.status(500).json(err as UnknownError); // unknown error, sends error response
+        } 
+        if (isUnknownError(err)) {
+          res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
         }
       }
     }
@@ -74,7 +75,7 @@ export default class AuthController extends Controller {
           message: 'User is authenticated',
           authorizedUser: user.credentials.username,
           payload: {user, token}
-        };
+        };console.log('Success Message: ' + successRes);
         res.status(200).json(successRes); // login success, sends success response
       }
     }
