@@ -13,7 +13,7 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": "./tsconfig-for-eslint.json"
+    "project": "**/tsconfig-for-eslint.json"
   },
   "rules": {
     "comma-dangle": "off",
