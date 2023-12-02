@@ -73,7 +73,8 @@ export class User implements IUser {
 
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
-    return await DAO._db.findUserByUsername(username);
+    const user = await DAO._db.findUserByUsername(username);
+    return user;
   }
 
   static async validateUser(credentials: ILogin): Promise<IUser> {

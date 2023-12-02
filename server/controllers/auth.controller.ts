@@ -88,5 +88,6 @@ export default class AuthController extends Controller {
           res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
         }
       }
+    }
   }
 }
