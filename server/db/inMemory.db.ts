@@ -29,7 +29,7 @@ export class InMemoryDB implements IDatabase {
   }
 
   async findUserByUsername(username: string): Promise<IUser | null> {
-    const user = this.users.find((user) => user.credentials.username === username);
+    const user = this.users.find((userDB) => userDB.credentials.username === username);
     return (user) ? user : null;
   }
 
