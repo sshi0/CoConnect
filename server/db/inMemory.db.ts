@@ -8,7 +8,7 @@ import { IUser } from '../../common/user.interface';
 import { YacaError, UnknownError } from '../../common/server.responses';
 
 export class InMemoryDB implements IDatabase {
-  // TODO
+  private users: IUser[] = [];
 
   async connect(): Promise<void> {
     // TODO
@@ -23,19 +23,20 @@ export class InMemoryDB implements IDatabase {
   }
 
   async saveUser(user: IUser): Promise<IUser> {
-    // TODO: must return a copy of the saved user
-    return user;
+    this.users.push(user);
+    const temp = {credentials: {username: user.credentials.username, password: ''}, extra: user.extra};
+    return temp;
   }
 
   async findUserByUsername(username: string): Promise<IUser | null> {
-    // TODO
-    return null;
+    const user = this.users.find((user) => user.credentials.username === username);
+    return (user) ? user : null;
   }
 
   async findAllUsers(): Promise<IUser[]> {
-    const users: IUser[] = [];
+    const allUsers: IUser[] = [];
     // TODO
-    return users;
+    return allUsers;
   }
 
   async saveChatMessage(message: IChatMessage): Promise<IChatMessage> {

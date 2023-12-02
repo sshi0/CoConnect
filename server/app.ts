@@ -80,12 +80,14 @@ class App {
   private configureControllers(controllers: Controller[]) {
     //  Controller.io = this.io; // for later
     controllers.forEach((controller) => {
-      // TODO
+      this.app.use(controller.path, controller.router);
     });
   }
 
   public serverLogger(req: Request, res: Response, next: NextFunction) {
-    // TODO
+    console.log(req.method + ' ' + req.url)
+    console.log(res.statusCode)
+    console.log(req.body)
     next();
   }
 

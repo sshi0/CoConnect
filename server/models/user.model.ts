@@ -21,14 +21,48 @@ export class User implements IUser {
 
   async join(): Promise<IUser> {
     // join YACA as a user, serving the register request
-    // TODO
-    return { credentials: { username: '', password: 'obfuscated' } };
+    console.log('Display Name: ' + this.extra + ' ' + !this.extra);
+    if (!this.credentials.username) {
+      throw new YacaError('Username empty', 'Username cannot be empty');
+    }
+    else if (!this.credentials.password) {
+      throw new YacaError('Password empty', 'Password cannot be empty');
+    }
+    else if (!this.extra) {
+      throw new YacaError('Display Name empty', 'Choose a display name');
+    }
+    const username = this.credentials.username;
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(this.credentials.password, salt);
+    const extra = this.extra;
+    console.log('Username: ' + username + ' Password: ' + password + ' Display Name: ' + extra);
+    const user = { credentials: { username, password }, extra: extra };
+    await DAO._db.saveUser(user);
+    return user;
   }
 
   async login(): Promise<IUser> {
     // login to  YACA with user credentials
-    // TODO
-    return { credentials: { username: '', password: 'obfuscated' } };
+    if (this.credentials.username == '') {
+      throw new YacaError('Username empty', 'Username cannot be empty');
+    }
+    else if (this.credentials.password == '') {
+      throw new YacaError('Password empty', 'Password cannot be empty');
+    }
+    const user = await User.getUserForUsername(this.credentials.username);
+    console.log('DB Username: ' + user?.credentials.username)
+    console.log('DB Password: ' + user?.credentials.password)
+    console.log('DB Extra: ' + user?.extra)
+    if (!user) {
+      throw new YacaError('Invalid Username', 'User not found');
+    }
+    else {
+      const match = await bcrypt.compare(this.credentials.password, user.credentials.password);
+      if (!match) {
+        throw new YacaError('Password Error', 'Incorrect password');
+      }
+    }
+    return user;
   }
 
   static async getAllUsernames(): Promise<string[]> {
@@ -39,7 +73,11 @@ export class User implements IUser {
 
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
-    // TODO
-    return null;
+    return await DAO._db.findUserByUsername(username);
+  }
+
+  static async validateUser(credentials: ILogin): Promise<IUser> {
+    // validate the credentials of a user
+    return {credentials};
   }
 }
