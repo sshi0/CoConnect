@@ -32,62 +32,6 @@ function loadFriends(): IFriend[] {
   return parsedFriends;
 }
 
-function saveFriends(): void { 
-  // save friends to local storage
-  localStorage.setItem('friends', JSON.stringify(friends));
-}
-
-function createRawFriendElement(friend: IFriend): HTMLElement {
-  // create an HTML friend element without any listeners attached
-  const newFriend = document.createElement('div');
-  newFriend.setAttribute('class', 'friend');
-  newFriend.setAttribute('id', friend.id);
-  if (friend.invited) newFriend.setAttribute('invited', 'yes');
-  else newFriend.setAttribute('invited', 'no');
-  newFriend.innerHTML = `
-    <div class="friendDets">
-      <input type="checkbox" class="inviteCheck">
-      Name: ${friend.displayName}
-    </div>
-    <button class="crossButton" id="removeFriendButton">&times</button>
-    <div class="friendDets">Email:${friend.email}</div>
-  `;
-  return newFriend;
-}
-
-function onDeleteFriend(id: String): void {
-  // event handler to remove an existing friend from local storage and the document
-  console.log(id);
-  friends = friends.filter((friend) => friend.id !== id);
-}
-
-function onInviteFriend(friend: IFriend): void {
-  // event handler to invite a friend by email when a checkbox is checked
-  const subject = 'I am inviting you to join YACA to chat with us!';
-  const mailtoLink = 
-  `mailto:${friend.email}?subject=${encodeURIComponent(subject)}`;
-  const newWindow: Window | null = window.open(
-  mailtoLink, '_blank', 
-  'toolbar=no,scrollbars=no,popup=yes,width=300px,height=400px');
-  if (newWindow) { // Shift focus on the new window
-    newWindow.focus();
-  }
-}
-
-function loadFriendsIntoDocument(): void {
-  // read friends from local storage and add them to the document
-  loadFriends();
-  const friendListContainer = document.getElementById('friendListContainer');
-  if (friendListContainer) {
-    friendListContainer.innerHTML = '';
-    friends.forEach((friend) => {
-      const friendElmnt = createRawFriendElement(friend);
-      const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
-      appendFriendElementToDocument(friendWithBehavior);
-    });
-  }
-}
-
 function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   // add required listeners to the HTML friend element
   const friend = friends.find(f => f.id === friendEmnt.id);
@@ -121,6 +65,69 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
     });
   }
   return friendEmnt;
+}
+
+function loadFriendsIntoDocument(): void {
+  // read friends from local storage and add them to the document
+  loadFriends();
+  const friendListContainer = document.getElementById('friendListContainer');
+  if (friendListContainer) {
+    friendListContainer.innerHTML = '';
+    friends.forEach((friend) => {
+      const friendElmnt = createRawFriendElement(friend);
+      const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
+      appendFriendElementToDocument(friendWithBehavior);
+    });
+  }
+}
+
+let friends: IFriend[] = loadFriends();
+loadFriendsIntoDocument();
+const addFriendForm = document.getElementById('addFriend');
+if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
+const clearfriendsButton = document.getElementById('clearfriendsButton');
+if (clearfriendsButton) clearfriendsButton.addEventListener('click', onClearFriends);
+
+function saveFriends(): void { 
+  // save friends to local storage
+  localStorage.setItem('friends', JSON.stringify(friends));
+}
+
+function createRawFriendElement(friend: IFriend): HTMLElement {
+  // create an HTML friend element without any listeners attached
+  const newFriend = document.createElement('div');
+  newFriend.setAttribute('class', 'friend');
+  newFriend.setAttribute('id', friend.id);
+  if (friend.invited) newFriend.setAttribute('invited', 'yes');
+  else newFriend.setAttribute('invited', 'no');
+  newFriend.innerHTML = `
+    <div class="friendDets">
+      <input type="checkbox" class="inviteCheck">
+      Name: ${friend.displayName}
+    </div>
+    <button class="crossButton" id="removeFriendButton">&times</button>
+    <div class="friendDets">Email:${friend.email}</div>
+  `;
+  return newFriend;
+}
+
+function onDeleteFriend(id: string): void {
+  // event handler to remove an existing friend from local storage and the document
+  console.log(id);
+  friends = friends.filter((friend) => friend.id !== id);
+}
+
+function onInviteFriend(friend: IFriend): void {
+  // event handler to invite a friend by email when a checkbox is checked
+  const subject = 'I am inviting you to join YACA to chat with us!';
+  const mailtoLink = 
+  `mailto:${friend.email}?subject=${encodeURIComponent(subject)}`;
+  const newWindow: Window | null = window.open(
+  mailtoLink, '_blank', 
+  'toolbar=no,scrollbars=no,popup=yes,width=300px,height=400px');
+  if (newWindow) { // Shift focus on the new window
+    newWindow.focus();
+  }
 }
 
 function appendFriendElementToDocument(friendEmnt: HTMLElement): void {
@@ -157,11 +164,6 @@ function onAddFriend(): void {
     emailInput.value = '';
   }
 }
-
-let friends: IFriend[] = loadFriends();
-loadFriendsIntoDocument();
-const addFriendForm = document.getElementById('addFriend');
-if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
 
 function onClearFriends(): void {
   // event handler to create a new friend from form info and 
