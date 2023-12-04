@@ -43,6 +43,7 @@ function onDeleteFriend(id: string): void {
   // event handler to remove an existing friend from local storage and the document
   console.log(id);
   friends = friends.filter((friend) => friend.id !== id);
+  saveFriends();
 }
 
 function onInviteFriend(friend: IFriend): void {
@@ -108,17 +109,7 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
         const delConfirm = confirm('Are you sure you want to remove this friend?')
         if (delConfirm) {
           onDeleteFriend(friendEmnt.id);
-          saveFriends();
-          loadFriends();
-          const friendListContainer = document.getElementById('friendListContainer');
-          if (friendListContainer) {
-            friendListContainer.innerHTML = '';
-            friends.forEach((friend1) => {
-              const friendElmnt = createRawFriendElement(friend1);
-              const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
-              appendFriendElementToDocument(friendWithBehavior);
-            });
-          }
+          friendElement.remove();
         }
         else {
           return friendEmnt;
@@ -161,7 +152,12 @@ function onAddFriend(): void {
     };
     friends.push(newFriend);
     saveFriends();
-    loadFriendsIntoDocument();
+    const friendListContainer = document.getElementById('friendListContainer');
+    if (friendListContainer) {
+      const friendElmnt = createRawFriendElement(newFriend);
+      const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
+      appendFriendElementToDocument(friendWithBehavior);
+    }
 
     // Reset the form after adding a friend
     displayNameInput.value = '';
