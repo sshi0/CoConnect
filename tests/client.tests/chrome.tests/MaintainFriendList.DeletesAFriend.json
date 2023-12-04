@@ -154,18 +154,15 @@
         },
         {
             "type": "click",
-            "target": "main",
             "selectors": [
-                [
-                    "#c4edb4d6-f053-4410-81d7-72df9e820a00 > button"
-                ]
+                "#removeFriendButton"
             ],
-            "offsetY": 27.6640625,
-            "offsetX": 7.90625
+            "offsetX": 14.90625,
+            "offsetY": 3.6640625
         },
         {
             "type": "waitForExpression",
-            "expression": "!(new RegExp(\"hi\",\"i\").test(document.body.textContent))"
+            "expression": "!(new RegExp(\"steven\",\"i\").test(document.body.textContent))"
         }
     ]
 }
