@@ -1,0 +1,102 @@
+{
+    "title": "CreateFriendList.AddFriend",
+    "steps": [
+        {
+            "type": "waitForExpression",
+            "expression": "(()=>{localStorage.setItem('friends',JSON.stringify([]));return true;})()"
+        },
+        {
+            "type": "setViewport",
+            "width": 1155,
+            "height": 952,
+            "deviceScaleFactor": 1,
+            "isMobile": false,
+            "hasTouch": false,
+            "isLandscape": false
+        },
+        {
+            "type": "navigate",
+            "url": "http://localhost:8080/pages/friends.html",
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:8080/pages/friends.html",
+                    "title": "YACA Friend List"
+                }
+            ]
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#nameInput"
+                ]
+            ],
+            "offsetY": 6.1875,
+            "offsetX": 220.6875
+        },
+        {
+            "type": "change",
+            "value": "steven",
+            "selectors": [
+                [
+                    "#nameInput"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#emailInput"
+                ]
+            ],
+            "offsetY": 25.1875,
+            "offsetX": 57.703125
+        },
+        {
+            "type": "change",
+            "value": "steven@gmail.com",
+            "selectors": [
+                [
+                    "#emailInput"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#addFriendButton"
+                ],
+                [
+                    "text/Add Friend"
+                ]
+            ],
+            "offsetY": 19.890625,
+            "offsetX": 67.4296875,
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:8080/pages/friends.html?name=&email=",
+                    "title": ""
+                }
+            ]
+        },
+        {
+            "type": "waitForElement",
+            "target": "main",
+            "selectors": [
+                [
+                    "text/steven",
+                    "text/steven@gmail.com"
+                ]
+            ]
+        }
+    ]
+}

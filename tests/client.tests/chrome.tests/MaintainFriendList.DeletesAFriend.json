@@ -1,0 +1,168 @@
+{
+    "title": "MaintainFriendList.DeletesAFriend",
+    "steps": [
+        {
+            "type": "setViewport",
+            "width": 1012,
+            "height": 948,
+            "deviceScaleFactor": 1,
+            "isMobile": false,
+            "hasTouch": false,
+            "isLandscape": false
+        },
+        {
+            "type": "waitForExpression",
+            "expression": "(()=>{localStorage.setItem('friends',JSON.stringify([]));return true;})()"
+        },
+        {
+            "type": "navigate",
+            "url": "http://localhost:8080/pages/friends.html?name=&email=",
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:8080/pages/friends.html?name=&email=",
+                    "title": "YACA Friend List"
+                }
+            ]
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#nameInput"
+                ],
+                [
+                    "text/steven"
+                ]
+            ],
+            "offsetY": 20.5859375,
+            "offsetX": 437.0859375
+        },
+        {
+            "type": "change",
+            "target": "main",
+            "selectors": [
+                "#nameInput"
+            ],
+            "value": "steven"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#emailInput"
+                ]
+            ],
+            "offsetY": 13.5859375,
+            "offsetX": 48.5625
+        },
+        {
+            "type": "change",
+            "value": "steven@gmail.com",
+            "selectors": [
+                [
+                    "#emailInput"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#addFriendButton"
+                ],
+                [
+                    "text/Add Friend"
+                ]
+            ],
+            "offsetY": 5.6484375,
+            "offsetX": 64.9296875,
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:8080/pages/friends.html?name=&email=",
+                    "title": ""
+                }
+            ]
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#nameInput"
+                ]
+            ],
+            "offsetY": 24.5859375,
+            "offsetX": 399.0859375
+        },
+        {
+            "type": "change",
+            "value": "hi",
+            "selectors": [
+                [
+                    "#nameInput"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#emailInput"
+                ]
+            ],
+            "offsetY": 9.5859375,
+            "offsetX": 115.5625
+        },
+        {
+            "type": "change",
+            "value": "dfsjaijow@gmail.com",
+            "selectors": [
+                [
+                    "#emailInput"
+                ]
+            ],
+            "target": "main"
+        },
+        {
+            "type": "click",
+            "target": "main",
+            "selectors": [
+                [
+                    "#addFriendButton"
+                ],
+                [
+                    "text/Add Friend"
+                ]
+            ],
+            "offsetY": 4.6484375,
+            "offsetX": 67.9296875,
+            "assertedEvents": [
+                {
+                    "type": "navigation",
+                    "url": "http://localhost:8080/pages/friends.html?name=&email=",
+                    "title": ""
+                }
+            ]
+        },
+        {
+            "type": "click",
+            "selectors": [
+                "#removeFriendButton"
+            ],
+            "offsetX": 14.90625,
+            "offsetY": 3.6640625
+        },
+        {
+            "type": "waitForExpression",
+            "expression": "!(new RegExp(\"steven\",\"i\").test(document.body.textContent))"
+        }
+    ]
+}
