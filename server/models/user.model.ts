@@ -36,6 +36,11 @@ export class User implements IUser {
       throw new YacaError('Invalid Password', 'Password not strong enough');
     }
     const username = this.credentials.username;
+    const existingUser = await User.getUserForUsername(this.credentials.username);
+    if (existingUser) {
+      throw new YacaError('User Exists', 'User already exists');
+    }
+    console.log("Existing: " + existingUser);
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(this.credentials.password, salt);
     const extra = this.extra;
