@@ -75,8 +75,8 @@ export default class AuthController extends Controller {
           message: 'User is authenticated',
           authorizedUser: user.credentials.username,
           payload: {user, token}
-        };console.log('Success Message: ' + successRes);
-        res.redirect('/pages/chat.html');
+        };
+        console.log('Success Message: ' + successRes);
         res.status(200).json(successRes); // login success, sends success response
       }
     }
