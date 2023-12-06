@@ -49,5 +49,6 @@ async function isLoggedIn(): Promise<boolean> {
 document.addEventListener('DOMContentLoaded', async function (e: Event) {
   // Document-ready event handler
   e.preventDefault();
-  // anything to TODO here?
+  const logoutButton = document.getElementById('logoutBtn');
+  logoutButton?.addEventListener('click', onLogout);
 });
