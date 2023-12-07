@@ -32,7 +32,6 @@ async function login(user: IUser) {
       localStorage.setItem('token', signedToken);
       localStorage.setItem('userCreds', JSON.stringify(payload.user.credentials));
       window.location.href = "chat.html";
-      window.location.href = "chat.html";
     }
     else if (res.status === 400) {
       const data: YacaError = res.data;

@@ -22,13 +22,15 @@ export class ChatMessage implements IChatMessage {
   }
 
   async post(): Promise<IChatMessage> {
-    // TODO
-    return { _id: '', author: '', text: '', timestamp: '' };
+    // post a message to the chat
+    const newMessage = await DAO._db.saveChatMessage(this);
+    return newMessage;
   }
 
   static async getAllChatMessages(): Promise<IChatMessage[]> {
-    // TODO
-    return [];
+    // get all chat messages
+    const messages = await DAO._db.findAllChatMessages();
+    return messages;
   }
 
   // TODO
