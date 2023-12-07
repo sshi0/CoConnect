@@ -3,6 +3,7 @@
 
 import { IDatabase } from './dao';
 import mongoose from 'mongoose';
+import { v4 as uuidV4 } from 'uuid';
 import { Schema, model } from 'mongoose';
 import { IUser } from '../../common/user.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
@@ -60,7 +61,10 @@ export class MongoDB implements IDatabase {
   async saveUser(user: IUser): Promise<IUser> {
     // Save user to MongoDB
     const newUser = new MUser(user);
+    newUser._id = uuidV4();
+    console.log("New User: " + newUser);
     const savedUser = await newUser.save();
+    console.log("Saved User: " + savedUser);
     return savedUser;
   }
 

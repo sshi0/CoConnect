@@ -10,9 +10,9 @@ export const ENV : string = process.env.ENV ?? 'DEV';
 
 export const DB_CONN_STR: string =
   ENV === 'DEV'
-    ? (process.env.DB_URL ?? 'unknown') + (process.env.DEV_DB ?? 'unknown')
+    ? process.env.DB_URL_DEV as string
     : ENV === 'PROD'
-    ? (process.env.DB_URL ?? 'unknown') + (process.env.PROD_DB ?? 'unknown')
+    ? process.env.DB_URL_PROD as string
     : 'unknown';
 
 export const JWT_KEY: string = process.env.JWT_KEY ?? 'someDefaultKey';

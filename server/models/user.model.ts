@@ -44,6 +44,7 @@ export class User implements IUser {
     const password = await bcrypt.hash(this.credentials.password, salt);
     const extra = this.extra;
     const user = { credentials: { username, password }, extra: extra };
+    console.log("Saving User: " + existingUser + " " + user.credentials.username + " " + user.credentials.password + " " + user.extra);
     const newUser = await DAO._db.saveUser(user);
     return newUser;
   }
@@ -79,9 +80,6 @@ export class User implements IUser {
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
     const user = await DAO._db.findUserByUsername(username);
-    if (!user) {
-      throw new YacaError('EmptyUser', 'User does not exist');
-    }
     return user;
   }
 
@@ -89,7 +87,7 @@ export class User implements IUser {
     // validate the credentials of a user
     const user = await DAO._db.findUserByUsername(credentials.username);
     if (!user) {
-      throw new YacaError('InvalidToken', 'Token is invalid');
+      throw new YacaError('Invalid Token', 'Token is invalid');
     }
     return user;
   }

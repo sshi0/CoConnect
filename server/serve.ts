@@ -19,10 +19,6 @@ const app = new App(
   ],
   {
     clientDir: path.join(__dirname, '../.dist/client'),
-    /* 
-      for now using an IMemeoryDB instance, but later change the following so that
-      if ENV !== 'EARLY', a MongoDB instance new MongoDB(dbURL) is used...
-    */
     db: ENV === 'EARLY' ? new InMemoryDB() : new MongoDB(dbURL),
     port: PORT,
     host: HOST

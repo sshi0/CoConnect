@@ -9,6 +9,8 @@ Content-Type: application/json
 "extra": "hakan"
 }
 
+###
+
 // create a user serra
 POST http://localhost:8080/auth/users
 Content-Type: application/json
@@ -27,7 +29,7 @@ POST http://localhost:8080/auth/users/me@hakan.com
 Content-Type: application/json
 
 {
-"password": "bl@hbl@h"
+"password": "Blah123"
 }
 ###
 
