@@ -45,7 +45,17 @@ export default class AuthController extends Controller {
       const user = await newUser.join(); // checks if user already registered
       if (user) {
         const tokenPayload: ILogin = user.credentials;
-        const token = jwt.sign(tokenPayload, secretKey, {expiresIn: tokenExpiry});
+        const getToken = () => {
+          if (tokenExpiry === 'never') {
+            return jwt.sign(tokenPayload, secretKey); // just omit expiresIn to specify never
+          } 
+          else {
+            return jwt.sign(tokenPayload, secretKey, {expiresIn: tokenExpiry});
+          }
+        };
+        const token = getToken();
+        console.log("Token: " + token);
+        
         const successRes: ISuccess = {
           name: 'RegistrationSuccess',
           message: 'User has registered',
@@ -79,7 +89,16 @@ export default class AuthController extends Controller {
       const user = await newUser.login();
       if (user) {
         const tokenPayload: ILogin = user.credentials;
-        const token = jwt.sign(tokenPayload, secretKey, {expiresIn: tokenExpiry});
+        const getToken = () => {
+          if (tokenExpiry === 'never') {
+            return jwt.sign(tokenPayload, secretKey); // just omit expiresIn to specify never
+          } 
+          else {
+            return jwt.sign(tokenPayload, secretKey, {expiresIn: tokenExpiry});
+          }
+        };
+        const token = getToken();
+        console.log("Token: " + token);
         const successRes: ISuccess = {
           name: 'LoginSuccess',
           message: 'User is authenticated',
