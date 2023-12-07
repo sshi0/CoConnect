@@ -9,15 +9,16 @@ import { YacaError, UnknownError } from '../../common/server.responses';
 import { User } from './user.model';
 
 export class ChatMessage implements IChatMessage {
-  // public timestamp: string;
+  public timestamp: string;
 
-  // public _id: string;
+  public _id: string;
 
   constructor(
     public author: string,
     public text: string
   ) {
-    // TOOD
+    this.timestamp = new Date().toISOString();
+    this._id = uuidV4();
   }
 
   async post(): Promise<IChatMessage> {

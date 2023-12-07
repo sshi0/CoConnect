@@ -13,7 +13,7 @@ const UserSchema = new Schema<IUser>({
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true}
   },
-  extra: {type: String, required: false}
+  extra: {type: String, required: false},
   _id: {type: String, required: true}
 });
 
@@ -47,7 +47,9 @@ export class MongoDB implements IDatabase {
   }
 
   async init(): Promise<void> {
-    // TODO
+    // Initializes empty database for EARLY/DEV 
+    MUser.deleteMany({});
+    MChatMessage.deleteMany({});
   }
 
   async close(): Promise<void> {
@@ -55,32 +57,45 @@ export class MongoDB implements IDatabase {
   }
 
   async saveUser(user: IUser): Promise<IUser> {
-    // TODO
-    return user;
+    // Save user to MongoDB
+    const newUser = new MUser(user);
+    const savedUser = await newUser.save();
+    return savedUser;
   }
 
   async findUserByUsername(username: string): Promise<IUser | null> {
-    // TODO
-    return null;
+    // Find one user by username
+    const user: IUser | null = await MUser.findOne({'credentials.username': username}).exec();
+    return user;
   }
 
   async findAllUsers(): Promise<IUser[]> {
-    // TODO
-    return [];
+    // Find all users
+    const users: IUser[] = await MUser.find({}).exec();
+    return users;
+  }
+
+  async updateUser(user: IUser): Promise<IUser | null> {
+    // Update data for one user
+    const filter = { 'credentials.username': user.credentials.username };
+    const update = { 'extra' : user.extra, credentials: { 'user': user.credentials.username, 'password': user.credentials.password } };
+    const updatedUser: IUser | null = await MUser.findOneAndUpdate({filter, update, new:true}).exec();
+    return updatedUser;
   }
 
   async saveChatMessage(message: IChatMessage): Promise<IChatMessage> {
-    // TODO
-    return message;
+    const newMessage = new MChatMessage(message);
+    const savedMessage = await newMessage.save();
+    return savedMessage;
   }
 
   async findAllChatMessages(): Promise<IChatMessage[]> {
-    // TODO
-    return [];
+    const messages: IChatMessage[] = await MChatMessage.find({}).exec();
+    return messages;
   }
 
   async findChatMessageById(_id: string): Promise<IChatMessage | null> {
-    // TODO
-    return null;
+    const message = await MChatMessage.findOne({'_id': _id}).exec();
+    return message;
   }
 }
