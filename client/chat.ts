@@ -18,12 +18,20 @@ function onLogout(e: Event): void {
 }
 
 async function postChatMessage(chatMsg: IChatMessage): Promise<void> {
-  // TODO: save chat message on the server
+  // save chat message on the server
+  const jwtToken = localStorage.getItem('token');
+  const res: AxiosResponse = await axios.request({
+    method: 'post',
+    headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+    data: chatMsg,
+    url: '/chat/messages',
+    validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+    });
 }
 
 //
 function onPost(e: Event): void {
-  // TODO: post button event handler
+  // post button event handler
 }
 
 function makeChatMessage(
