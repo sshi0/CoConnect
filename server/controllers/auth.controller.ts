@@ -43,7 +43,17 @@ export default class AuthController extends Controller {
       newUser.extra = req.body.extra;
       
       const user = await newUser.join(); // checks if user already registered
-      res.status(201).json(user); // join success, sends success response
+      if (user) {
+        const tokenPayload: ILogin = user.credentials;
+        const token = jwt.sign(tokenPayload, secretKey, {expiresIn: tokenExpiry});
+        const successRes: ISuccess = {
+          name: 'RegistrationSuccess',
+          message: 'User has registered',
+          authorizedUser: user.credentials.username,
+          payload: {user, token}
+        };
+        res.status(201).json(successRes); // join success, sends success response
+      }
     }
     catch (err) {
       if (err instanceof Error) {
@@ -76,7 +86,6 @@ export default class AuthController extends Controller {
           authorizedUser: user.credentials.username,
           payload: {user, token}
         };
-        console.log('Success Message: ' + successRes);
         res.status(200).json(successRes); // login success, sends success response
       }
     }

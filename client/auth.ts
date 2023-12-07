@@ -59,6 +59,7 @@ async function register(newUser: IUser) {
     );
     if (res.status === 201) {
       alert('Registration successful, welcome to YACA ' + newUser.extra);
+      window.location.href = "chat.html";
     }
     else if (res.status === 400) {
       const data: YacaError = res.data;
