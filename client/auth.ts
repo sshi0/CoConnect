@@ -30,10 +30,8 @@ async function login(user: IUser) {
       const payload = data?.payload as IAuthenticatedUser;
       const signedToken = payload.token;
       localStorage.setItem('token', signedToken);
+      localStorage.setItem('userCreds', JSON.stringify(payload.user.credentials));
       window.location.href = "chat.html";
-      console.log("res data token:" + signedToken);
-      console.log("test");
-      localStorage.setItem('token', signedToken);
       window.location.href = "chat.html";
     }
     else if (res.status === 400) {
@@ -68,6 +66,7 @@ async function register(newUser: IUser) {
       const payload = data?.payload as IAuthenticatedUser;
       const signedToken = payload.token;
       localStorage.setItem('token', signedToken);
+      localStorage.setItem('userCreds', JSON.stringify(payload.user.credentials));
       window.location.href = "chat.html";
     }
     else if (res.status === 400) {

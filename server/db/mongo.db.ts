@@ -9,7 +9,12 @@ import { IChatMessage } from '../../common/chatMessage.interface';
 // import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
 
 const UserSchema = new Schema<IUser>({
-  // TODO
+  credentials : {
+    username: {type: String, required: true, unique: true},
+    password: {type: String, required: true}
+  },
+  extra: {type: String, required: false}
+  _id: {type: String, required: true}
 });
 
 const ChatMessageSchema = new Schema<IChatMessage>({
@@ -32,7 +37,13 @@ export class MongoDB implements IDatabase {
   }
 
   async connect(): Promise<void> {
-    // TODO
+    // connect to MongoDB 
+    mongoose.connect(this.dbURL);
+    const db = mongoose.connection;
+    db.on('error', (err) => { // listen on connection errors
+      console.error(err); // if there is an error in connection, log it!
+    });
+    db.once('open', () => console.log('Connected to MongoDB'));
   }
 
   async init(): Promise<void> {

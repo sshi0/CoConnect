@@ -83,12 +83,16 @@ export class User implements IUser {
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
     const user = await DAO._db.findUserByUsername(username);
+    if (!user) {
+      throw new YacaError('InvalidToken', 'Token is invalid');
+    }
     return user;
   }
 
-  static async validateUser(credentials: ILogin): Promise<IUser> {
+  static async validateCredentials(credentials: ILogin): Promise<IUser | null> {
     // validate the credentials of a user
-    return {credentials};
+    const user = await DAO._db.findUserByUsername(credentials.username);
+    return user;
   }
 
   static async checkPassword(credentials: ILogin): Promise<string | null> {
