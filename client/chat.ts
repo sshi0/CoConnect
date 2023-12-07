@@ -10,8 +10,11 @@ const token = localStorage.getItem('token');
 
 function onLogout(e: Event): void {
   e.preventDefault();
-  // TODO: logout button event handler
   // logout by deleting locally stored token and current user
+  // decode token see who signed and compare with author of message so owner of author must be person posting the message
+  localStorage.removeItem('token');
+  // remove curr User
+  window.location.href = "auth.html"
 }
 
 async function postChatMessage(chatMsg: IChatMessage): Promise<void> {
@@ -49,5 +52,6 @@ async function isLoggedIn(): Promise<boolean> {
 document.addEventListener('DOMContentLoaded', async function (e: Event) {
   // Document-ready event handler
   e.preventDefault();
-  // anything to TODO here?
+  const logoutButton = document.getElementById('logoutBtn');
+  logoutButton?.addEventListener('click', onLogout);
 });

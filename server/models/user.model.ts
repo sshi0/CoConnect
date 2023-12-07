@@ -32,8 +32,8 @@ export class User implements IUser {
     else if (!this.extra) {
       throw new YacaError('Display Name empty', 'Choose a display name');
     }
-    else if (!isValidPassword) {
-      throw new YacaError('Invalid Password', 'Password not strong enough');
+    else if (isValidPassword != null) {
+      throw new YacaError('Invalid Password', isValidPassword);
     }
     const username = this.credentials.username;
     const existingUser = await User.getUserForUsername(this.credentials.username);
@@ -91,17 +91,15 @@ export class User implements IUser {
     return {credentials};
   }
 
-  static async checkPassword(credentials: ILogin): Promise<boolean> {
+  static async checkPassword(credentials: ILogin): Promise<string | null> {
     // check the password of a user
-    if (credentials.password.length < 4) {return false}
-    if (credentials.password.toLowerCase() == credentials.password) {return false}
-    if (credentials.password.toUpperCase() == credentials.password) {return false}
-    if (!/\d/.test(credentials.password)) {return false}
-    if (!/\W/.test(credentials.password)) {return false}
+    if (credentials.password.length < 4) {return "Password too short, at least 4 characters"}
+    if (!/\d/.test(credentials.password)) {return "Pasword too weak, at least one digit"}
+    if (!/[a-zA-Z]/.test(credentials.password)) {return "Password too weak, at least one letter"}
     const special = /['!', '@', '#', '$', '%', '^', '&', '~', '*', '-', '+']/;
-    if (!special.test(credentials.password)) {return false}
+    if (!special.test(credentials.password)) {return "Password too weak, at least one special character"}
     const invalid = /[^a-zA-Z\d\!\@\#\$\%\^\&\~\*\-\+]/;
-    if (invalid.test(credentials.password)) {return false}
-    return true;
+    if (invalid.test(credentials.password)) {return "Password contains invalid characters"}
+    return null;
   }
 }

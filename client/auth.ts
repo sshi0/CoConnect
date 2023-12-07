@@ -28,7 +28,7 @@ async function login(user: IUser) {
       if (data) {
         alert('Login successful, welcome back!');
       }
-      window.location.assign("chat.html");
+      window.location.href = "chat.html";
     }
     else if (res.status === 400) {
       const data: YacaError = res.data;
