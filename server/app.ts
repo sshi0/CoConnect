@@ -64,8 +64,10 @@ class App {
   private configureApp() {
     DAO.db = this.db;
     DAO.db.connect().then(() => {
-      // TODO
       // typically should initialize the DB to a blank state here if ENV === 'DEV' or ENV === 'EARLY'
+      if (ENV === 'DEV' || ENV === 'EARLY') {
+        DAO.db.init();
+      }
     });
   }
 

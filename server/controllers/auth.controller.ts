@@ -37,10 +37,12 @@ export default class AuthController extends Controller {
 
   public async register(req: Request, res: Response) {
     try {
+      console.log("Req: " + req);
       const username = req.body.credentials.username;
       const password = req.body.credentials.password;
       const newUser = new User( { username, password });
       newUser.extra = req.body.extra;
+      console.log("New User: " + newUser);
       
       const user = await newUser.join(); // checks if user already registered
       if (user) {
