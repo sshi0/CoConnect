@@ -38,6 +38,7 @@ export class MongoDB implements IDatabase {
 
   async connect(): Promise<void> {
     // connect to MongoDB 
+    console.log(this.dbURL);
     mongoose.connect(this.dbURL);
     const db = mongoose.connection;
     db.on('error', (err) => { // listen on connection errors
