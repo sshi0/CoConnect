@@ -18,7 +18,7 @@ export const DB_CONN_STR: string =
 export const JWT_KEY: string = process.env.JWT_KEY ?? 'someDefaultKey';
 
 export const JWT_EXP: string =
-  ENV === 'PROD' ? process.env.JWT_EXP ?? '365d' : '100y'; // defaults to never
+  ENV === 'PROD' ? process.env.JWT_EXP ?? '365d' : 'never'; // defaults to never
 
 export const HOST: string =
   ENV === 'DEV' || ENV === 'EARLY'

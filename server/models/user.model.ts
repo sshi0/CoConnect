@@ -45,8 +45,8 @@ export class User implements IUser {
     const extra = this.extra;
     const user = { credentials: { username, password }, extra: extra };
     console.log("Saving User: " + existingUser + " " + user.credentials.username + " " + user.credentials.password + " " + user.extra);
-    const newUser = await DAO._db.saveUser(user);
-    return newUser;
+    await DAO._db.saveUser(user);
+    return user;
   }
 
   async login(): Promise<IUser> {

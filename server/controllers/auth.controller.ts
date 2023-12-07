@@ -42,11 +42,11 @@ export default class AuthController extends Controller {
       const password = req.body.credentials.password;
       const newUser = new User( { username, password });
       newUser.extra = req.body.extra;
-      console.log("New User: " + newUser);
       
       const user = await newUser.join(); // checks if user already registered
       if (user) {
         const tokenPayload: ILogin = user.credentials;
+        console.log("Token Expiry: " + tokenExpiry);
         const getToken = () => {
           if (tokenExpiry === 'never') {
             return jwt.sign(tokenPayload, secretKey); // just omit expiresIn to specify never

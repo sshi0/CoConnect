@@ -15,7 +15,6 @@ const UserSchema = new Schema<IUser>({
     password: {type: String, required: true}
   },
   extra: {type: String, required: false},
-  _id: {type: String, required: true}
 });
 
 const ChatMessageSchema = new Schema<IChatMessage>({
@@ -50,8 +49,9 @@ export class MongoDB implements IDatabase {
 
   async init(): Promise<void> {
     // Initializes empty database for EARLY/DEV 
-    MUser.deleteMany({});
-    MChatMessage.deleteMany({});
+    console.log("Initializing DB");
+    await MUser.deleteMany({});
+    await MChatMessage.deleteMany({});
   }
 
   async close(): Promise<void> {
@@ -61,9 +61,8 @@ export class MongoDB implements IDatabase {
   async saveUser(user: IUser): Promise<IUser> {
     // Save user to MongoDB
     const newUser = new MUser(user);
-    newUser._id = uuidV4();
     console.log("New User: " + newUser);
-    const savedUser = await newUser.save();
+    const savedUser: IUser = await newUser.save();
     console.log("Saved User: " + savedUser);
     return savedUser;
   }
