@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { IResponse } from '../common/server.responses';
+import { IAuthenticatedUser, IResponse } from '../common/server.responses';
 import { IUser } from '../common/user.interface';
 import {
   ISuccess,
@@ -27,8 +27,10 @@ async function login(user: IUser) {
       if (data) {
         alert('Login successful, welcome back!');
       }
-      const signedToken = res.data.token;
+      const payload = data?.payload as IAuthenticatedUser;
+      const signedToken = payload.token;
       localStorage.setItem('token', signedToken);
+      localStorage.setItem('userCreds', JSON.stringify(payload.user.credentials));
       window.location.href = "chat.html";
     }
     else if (res.status === 400) {
@@ -57,8 +59,14 @@ async function register(newUser: IUser) {
       validateStatus: () => true
       }
     );
-    if (res.status === 201) {
+    if (res.status === 201 && res.data) {
       alert('Registration successful, welcome to YACA ' + newUser.extra);
+      const data: ISuccess = res.data;
+      const payload = data?.payload as IAuthenticatedUser;
+      const signedToken = payload.token;
+      localStorage.setItem('token', signedToken);
+      localStorage.setItem('userCreds', JSON.stringify(payload.user.credentials));
+      window.location.href = "chat.html";
     }
     else if (res.status === 400) {
       const data: YacaError = res.data;

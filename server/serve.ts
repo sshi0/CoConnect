@@ -1,7 +1,7 @@
 import path from 'path';
 import App from './app';
 
-// import { MongoDB } from './db/mongo.db'; // for later
+import { MongoDB } from './db/mongo.db'; // for later
 import { InMemoryDB } from './db/inMemory.db';
 import { PORT, HOST, ENV } from './env';
 import { DB_CONN_STR as dbURL } from './env'; // for later
@@ -23,7 +23,7 @@ const app = new App(
       for now using an IMemeoryDB instance, but later change the following so that
       if ENV !== 'EARLY', a MongoDB instance new MongoDB(dbURL) is used...
     */
-    db: ENV === 'EARLY' ? new InMemoryDB() : new InMemoryDB(),
+    db: ENV === 'EARLY' ? new InMemoryDB() : new MongoDB(dbURL),
     port: PORT,
     host: HOST
   }
