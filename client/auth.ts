@@ -16,7 +16,6 @@ async function login(user: IUser) {
     const res = await axios.request(
       {
       method: 'post',
-      // headers: { Authorization: `Bearer ${token}` },
       data: {password: user.credentials.password},
       url: ('/auth/users/'+ user.credentials.username),
       validateStatus: () => true
@@ -28,6 +27,8 @@ async function login(user: IUser) {
       if (data) {
         alert('Login successful, welcome back!');
       }
+      const signedToken = res.data.token;
+      localStorage.setItem('token', signedToken);
       window.location.href = "chat.html";
     }
     else if (res.status === 400) {
