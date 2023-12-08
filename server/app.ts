@@ -28,7 +28,7 @@ class App {
 
   public server: HttpServer;
 
-  public io: SocketServer; // for later
+  public io: SocketServer; 
 
   constructor(
     controllers: Controller[],

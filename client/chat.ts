@@ -100,9 +100,13 @@ function makeChatMessage(
 
 function onNewChatMessage(chatMsg: IChatMessage): void {
   // eventhandler for websocket incoming new-chat-message
+  const userCreds = localStorage.getItem('userCreds');
+  const parsedUserCreds: ILogin = JSON.parse(userCreds as string);
+  if (chatMsg.author !== parsedUserCreds.username) {
   const chatContainer = document.getElementById('chatContainer');
   const msgElement = makeChatMessage(chatMsg.author, chatMsg.timestamp as string, chatMsg.text);
   chatContainer?.appendChild(msgElement);
+  }
 }
 
 async function getChatMessages(): Promise<void> {

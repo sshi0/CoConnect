@@ -17,14 +17,16 @@ import {
   isISuccess,
   isUnknownError
 } from '../../common/server.responses';
+import { Socket } from 'socket.io';
 import { io } from 'socket.io-client';
+
 export default class ChatController extends Controller {
+  public router: Router = Router();
+  
   public constructor(path: string) {
     super(path);
     this.initializeRoutes();
   }
-
-  public router: Router = Router();
 
   public initializeRoutes(): void {
     // this should define the routes handled by the middlewares chatRoomPage,
@@ -172,6 +174,7 @@ export default class ChatController extends Controller {
           authorizedUser: res.locals.authorizedUser,
           payload: postedMessage
         };
+        Controller.io.emit('newChatMessage', postedMessage);
         res.status(201).json(successRes); // post success, sends success response
       }
     }

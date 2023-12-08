@@ -7,7 +7,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { Schema, model } from 'mongoose';
 import { IUser } from '../../common/user.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
-// import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
+import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
 
 const UserSchema = new Schema<IUser>({
   credentials : {
