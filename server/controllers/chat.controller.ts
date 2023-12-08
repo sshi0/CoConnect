@@ -57,14 +57,10 @@ export default class ChatController extends Controller {
         next();
       }
       catch (err) {
-        if (err instanceof Error) {
-          if (isClientError(err)) {
-            res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
-          } 
-          if (isUnknownError(err)) {
-            res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
-          }
-        }
+        console.log("Caught error in token")
+        console.log(err);
+        const jwtError = new YacaError('AuthenticationError', 'Token is invalid');
+        res.status(401).json(jwtError); 
       }
     }
     else {
