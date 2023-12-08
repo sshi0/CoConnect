@@ -19,6 +19,8 @@ export interface IDatabase {
 
   findAllUsers(): Promise<IUser[]>;
 
+  updateUser(user: IUser): Promise<IUser | null> 
+
   findAllChatMessages(): Promise<IChatMessage[]>;
 
   findChatMessageById(_id: string): Promise<IChatMessage | null>;

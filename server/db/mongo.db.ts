@@ -14,11 +14,14 @@ const UserSchema = new Schema<IUser>({
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true}
   },
-  extra: {type: String, required: false},
+  extra: {type: String, required: false}
 });
 
 const ChatMessageSchema = new Schema<IChatMessage>({
-  // TODO
+  timestamp: {type: String, required: true},
+  _id: {type: String, required: true},
+  author: {type: String, required: true},
+  text: {type: String, required: true}
 });
 
 const MUser = model<IUser>('User', UserSchema);
@@ -89,6 +92,7 @@ export class MongoDB implements IDatabase {
 
   async saveChatMessage(message: IChatMessage): Promise<IChatMessage> {
     const newMessage = new MChatMessage(message);
+    console.log("New Message: " + newMessage);
     const savedMessage = await newMessage.save();
     return savedMessage;
   }

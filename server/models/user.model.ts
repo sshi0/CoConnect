@@ -70,11 +70,10 @@ export class User implements IUser {
     return user;
   }
 
-  static async getAllUsernames(): Promise<string[]> {
+  static async getAllUsers(): Promise<IUser[]> {
     // get the usernames of all users
     const users = await DAO._db.findAllUsers();
-    const usernames = users.map((user) => user.credentials.username);
-    return usernames;
+    return users;
   }
 
   static async getUserForUsername(username: string): Promise<IUser | null> {
@@ -83,7 +82,7 @@ export class User implements IUser {
     return user;
   }
 
-  static async validateCredentials(credentials: ILogin): Promise<IUser | null> {
+  static async validateCredentials(credentials: ILogin): Promise<IUser> {
     // validate the credentials of a user
     const user = await DAO._db.findUserByUsername(credentials.username);
     if (!user) {

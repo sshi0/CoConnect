@@ -34,8 +34,8 @@ Content-Type: application/json
 ###
 
 // valid (for user hakan) and invalid tokens
-@authTokenInvalid = <paste a valid token here, returned by a login request>
-@authTokenValid = <paste an invalid token here> 
+@authTokenValid = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lQGhha2FuLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJDB6R2dGUXBpN1JuN21aWXNxOXZ1eXVxYy4wQWM1VmszMXZTdlhZMjcwQzZybkxvM2dxazMuIiwiaWF0IjoxNzAxOTg2MjIyfQ.D1tNn37u9uOvR4Dz61CS_GneMugiyGNXa86N4NhI6GA
+@authTokenInvalid = lol
 
 ###
 

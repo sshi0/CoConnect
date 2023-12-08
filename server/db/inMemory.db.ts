@@ -39,6 +39,11 @@ export class InMemoryDB implements IDatabase {
     return allUsers;
   }
 
+  async updateUser(user: IUser): Promise<IUser | null> {
+    // Update data for one user
+    return user;
+  }
+
   async saveChatMessage(message: IChatMessage): Promise<IChatMessage> {
     // TODO: must return a copy of the saved message
     return message;
