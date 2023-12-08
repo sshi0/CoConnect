@@ -3,22 +3,25 @@
 
 import { IDatabase } from './dao';
 import mongoose from 'mongoose';
+import { v4 as uuidV4 } from 'uuid';
 import { Schema, model } from 'mongoose';
 import { IUser } from '../../common/user.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
-// import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
+import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
 
 const UserSchema = new Schema<IUser>({
   credentials : {
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true}
   },
-  extra: {type: String, required: false},
-  _id: {type: String, required: true}
+  extra: {type: String, required: false}
 });
 
 const ChatMessageSchema = new Schema<IChatMessage>({
-  // TODO
+  timestamp: {type: String, required: true},
+  _id: {type: String, required: true},
+  author: {type: String, required: true},
+  text: {type: String, required: true}
 });
 
 const MUser = model<IUser>('User', UserSchema);
@@ -49,8 +52,9 @@ export class MongoDB implements IDatabase {
 
   async init(): Promise<void> {
     // Initializes empty database for EARLY/DEV 
-    MUser.deleteMany({});
-    MChatMessage.deleteMany({});
+    console.log("Initializing DB");
+    await MUser.deleteMany({});
+    await MChatMessage.deleteMany({});
   }
 
   async close(): Promise<void> {
@@ -60,7 +64,9 @@ export class MongoDB implements IDatabase {
   async saveUser(user: IUser): Promise<IUser> {
     // Save user to MongoDB
     const newUser = new MUser(user);
-    const savedUser = await newUser.save();
+    console.log("New User: " + newUser);
+    const savedUser: IUser = await newUser.save();
+    console.log("Saved User: " + savedUser);
     return savedUser;
   }
 
@@ -86,6 +92,7 @@ export class MongoDB implements IDatabase {
 
   async saveChatMessage(message: IChatMessage): Promise<IChatMessage> {
     const newMessage = new MChatMessage(message);
+    console.log("New Message: " + newMessage);
     const savedMessage = await newMessage.save();
     return savedMessage;
   }

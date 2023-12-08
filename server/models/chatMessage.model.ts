@@ -7,6 +7,7 @@ import { IChatMessage } from '../../common/chatMessage.interface';
 import { IUser } from '../../common/user.interface';
 import { YacaError, UnknownError } from '../../common/server.responses';
 import { User } from './user.model';
+import { io } from 'socket.io-client';
 
 export class ChatMessage implements IChatMessage {
   public timestamp: string;

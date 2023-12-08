@@ -44,8 +44,9 @@ export class User implements IUser {
     const password = await bcrypt.hash(this.credentials.password, salt);
     const extra = this.extra;
     const user = { credentials: { username, password }, extra: extra };
-    const newUser = await DAO._db.saveUser(user);
-    return newUser;
+    console.log("Saving User: " + existingUser + " " + user.credentials.username + " " + user.credentials.password + " " + user.extra);
+    await DAO._db.saveUser(user);
+    return user;
   }
 
   async login(): Promise<IUser> {
@@ -66,32 +67,34 @@ export class User implements IUser {
         throw new YacaError('Password Error', 'Incorrect password');
       }
     }
-    return user;
+    return this;
   }
 
-  static async getAllUsernames(): Promise<string[]> {
+  static async getAllUsers(): Promise<IUser[]> {
     // get the usernames of all users
     const users = await DAO._db.findAllUsers();
-    const usernames = users.map((user) => user.credentials.username);
-    return usernames;
+    return users;
   }
 
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
     const user = await DAO._db.findUserByUsername(username);
+    return user;
+  }
+
+  static async validateCredentials(credentials: ILogin): Promise<IUser> {
+    // validate the credentials of a user
+    const user = await DAO._db.findUserByUsername(credentials.username);
     if (!user) {
-      throw new YacaError('EmptyUser', 'User does not exist');
+      throw new YacaError('Invalid Token', 'Token is invalid');
     }
     return user;
   }
 
-  static async validateCredentials(credentials: ILogin): Promise<IUser | null> {
-    // validate the credentials of a user
-    const user = await DAO._db.findUserByUsername(credentials.username);
-    if (!user) {
-      throw new YacaError('InvalidToken', 'Token is invalid');
-    }
-    return user;
+  static async updateUser(user: IUser): Promise<IUser | null> {
+    // update the data for a user
+    const updatedUser = await DAO._db.updateUser(user);
+    return updatedUser;
   }
 
   static async checkPassword(credentials: ILogin): Promise<string | null> {

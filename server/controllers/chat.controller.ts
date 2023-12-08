@@ -17,13 +17,16 @@ import {
   isISuccess,
   isUnknownError
 } from '../../common/server.responses';
+import { Socket } from 'socket.io';
+import { io } from 'socket.io-client';
+
 export default class ChatController extends Controller {
+  public router: Router = Router();
+  
   public constructor(path: string) {
     super(path);
     this.initializeRoutes();
   }
-
-  public router: Router = Router();
 
   public initializeRoutes(): void {
     // this should define the routes handled by the middlewares chatRoomPage,
@@ -31,8 +34,8 @@ export default class ChatController extends Controller {
     this.router.get('/', this.chatRoomPage);
     this.router.post('/messages', this.authenticate, this.postMessage);
     this.router.get('/messages', this.authenticate, this.getAllMessages);
-    this.router.get('/users/:username', this.getUser);
-    this.router.get('/users', this.getAllUsers);
+    this.router.get('/users/:username', this.authenticate, this.getUser);
+    this.router.get('/users', this.authenticate, this.getAllUsers);
     this.router.patch('/user/:username', this.updateUser);
   }
 
@@ -46,14 +49,11 @@ export default class ChatController extends Controller {
 
     if (token) {
       try {
+        console.log(token + " " + secretKey)
         const decodedToken = jwt.verify(token, secretKey) as ILogin;
+        console.log(decodedToken);
         const user = User.validateCredentials(decodedToken);
-        
-        // const browserCreds = localStorage.getItem('userCreds');
-        // const userCreds = JSON.parse(browserCreds || '{}') as ILogin;
-        // if (userCreds) {
-        //   const user = new User(userCreds);
-        // }
+        res.locals.authorizedUser = decodedToken.username;
         next();
       }
       catch (err) {
@@ -74,30 +74,107 @@ export default class ChatController extends Controller {
   }
 
   public async getAllUsers(req: Request, res: Response) {
-    // TODO
+    // gets all users from the database
+    try {
+      const users = await User.getAllUsers();
+      if (users) {
+        const successRes: ISuccess = {
+          name: 'UsersRetrieved',
+          message: 'Successfully retrieved all users',
+          authorizedUser: res.locals.authorizedUser,
+          payload: users
+        };
+        res.status(201).json(successRes); // post success, sends success response
+      }
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        if (isClientError(err)) {
+          res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
+        } 
+        if (isUnknownError(err)) {
+          res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
+        }
+      }
+    }
   }
 
   public async updateUser(req: Request, res: Response) {
-    // TODO
+    // update data for one user
+    if (req.body.credentials.username != res.locals.authorizedUser) {
+      const err = new YacaError('Authorization Error', 'User is not authorized to update this user');
+      res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
+    }
+    try {
+      const updatedUser = await User.updateUser(req.body);
+      if (updatedUser) {
+        const successRes: ISuccess = {
+          name: 'UserUpdated',
+          message: 'Successfully updated user',
+          authorizedUser: res.locals.authorizedUser,
+          payload: updatedUser
+        };
+        res.status(201).json(successRes); // post success, sends success response
+      }
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        if (isClientError(err)) {
+          res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
+        } 
+        if (isUnknownError(err)) {
+          res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
+        }
+      }
+    }
   }
 
   public async getUser(req: Request, res: Response) {
-    // TODO
+    // gets one user with username given in url
+    try {
+      const username = req.params.username;
+      const user = await User.getUserForUsername(username);
+      if (user) {
+        const successRes: ISuccess = {
+          name: 'UserFound',
+          message: 'Successfully found user',
+          authorizedUser: res.locals.authorizedUser,
+          payload: user
+        };
+        res.status(201).json(successRes); // post success, sends success response
+      }
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        if (isClientError(err)) {
+          res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
+        } 
+        if (isUnknownError(err)) {
+          res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
+        }
+      }
+    }
   }
 
   public async postMessage(req: Request, res: Response) {
     // Post a new chat message
+    if (req.body.author != res.locals.authorizedUser) {
+      const err = new YacaError('Authorization Error', 'User is not authorized to post this message under this username');
+      res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
+    }
     try {
-      const message = req.body.message;
-      const newMessage = new ChatMessage( message.text, message.author );
+      const message = req.body;
+      const newMessage = new ChatMessage( message.author, message.text );
       const postedMessage = await newMessage.post();
+      console.log("Posted Message: " + postedMessage);
       if (postedMessage) {
         const successRes: ISuccess = {
           name: 'MessagePosted',
           message: 'Message has been posted',
-          authorizedUser: req.body.credentials.username,
+          authorizedUser: res.locals.authorizedUser,
           payload: postedMessage
         };
+        Controller.io.emit('newChatMessage', postedMessage);
         res.status(201).json(successRes); // post success, sends success response
       }
     }
@@ -116,12 +193,13 @@ export default class ChatController extends Controller {
   public async getAllMessages(req: Request, res: Response) {
     // returns all chat message
     try {
+      console.log("Sent request for messages");
       const messages = await ChatMessage.getAllChatMessages();
       if (messages) {
         const successRes: ISuccess = {
           name: 'MessagesRetrieved',
           message: 'Successfully retrieved all messages',
-          authorizedUser: req.body.credentials.username,
+          authorizedUser: res.locals.authorizedUser,
           payload: messages
         };
         res.status(201).json(successRes); // post success, sends success response
