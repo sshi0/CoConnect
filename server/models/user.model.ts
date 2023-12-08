@@ -67,7 +67,7 @@ export class User implements IUser {
         throw new YacaError('Password Error', 'Incorrect password');
       }
     }
-    return user;
+    return this;
   }
 
   static async getAllUsers(): Promise<IUser[]> {
@@ -89,6 +89,12 @@ export class User implements IUser {
       throw new YacaError('Invalid Token', 'Token is invalid');
     }
     return user;
+  }
+
+  static async updateUser(user: IUser): Promise<IUser | null> {
+    // update the data for a user
+    const updatedUser = await DAO._db.updateUser(user);
+    return updatedUser;
   }
 
   static async checkPassword(credentials: ILogin): Promise<string | null> {

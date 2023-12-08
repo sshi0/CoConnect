@@ -1,7 +1,7 @@
 // controller superclass for behavior common to all controllers
 
 import { Router } from 'express';
-// import { Server as SocketServer } from 'socket.io'; // for later
+import { Server as SocketServer } from 'socket.io'; 
 import { Request, Response } from 'express';
 
 abstract class Controller {
@@ -9,7 +9,7 @@ abstract class Controller {
   // path or partial URL managed by this controller
   public path: string;
 
-  // public static io: SocketServer; // for later
+  public static io: SocketServer; 
 
   // each controller has a router
   public router: Router = Router();

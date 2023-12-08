@@ -1,10 +1,10 @@
 import path from 'path';
 import App from './app';
 
-import { MongoDB } from './db/mongo.db'; // for later
+import { MongoDB } from './db/mongo.db'; 
 import { InMemoryDB } from './db/inMemory.db';
 import { PORT, HOST, ENV } from './env';
-import { DB_CONN_STR as dbURL } from './env'; // for later
+import { DB_CONN_STR as dbURL } from './env'; 
 import AuthController from './controllers/auth.controller';
 import ChatController from './controllers/chat.controller';
 import HomeController from './controllers/home.controller';

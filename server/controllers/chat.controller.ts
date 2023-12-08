@@ -17,6 +17,7 @@ import {
   isISuccess,
   isUnknownError
 } from '../../common/server.responses';
+import { io } from 'socket.io-client';
 export default class ChatController extends Controller {
   public constructor(path: string) {
     super(path);
@@ -160,11 +161,8 @@ export default class ChatController extends Controller {
       res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
     }
     try {
-      console.log("Authorized User: " + res.locals.authorizedUser);
       const message = req.body;
-      console.log("Request Message: " + message);
-      const newMessage = new ChatMessage( message.text, message.author );
-      console.log("New Message: " + newMessage);
+      const newMessage = new ChatMessage( message.author, message.text );
       const postedMessage = await newMessage.post();
       console.log("Posted Message: " + postedMessage);
       if (postedMessage) {
@@ -192,6 +190,7 @@ export default class ChatController extends Controller {
   public async getAllMessages(req: Request, res: Response) {
     // returns all chat message
     try {
+      console.log("Sent request for messages");
       const messages = await ChatMessage.getAllChatMessages();
       if (messages) {
         const successRes: ISuccess = {

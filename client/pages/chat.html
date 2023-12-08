@@ -17,32 +17,11 @@
     <div class="chatTitle">Chat away with YACA!</div>
     <div class="button" id = "logOutBtn">Logout</div>
   </div>
-  <div class="body-container chatContainer">
-    <div class="message bot">
-      <div class="messagerDetails">
-        <div class="avatar">YACA Bot</div>
-        <div class="timeStamp">Some time ago</div> 
-      </div>
-      <div class="bubble">A warm welcome from YACA!</div>
-    </div>
-    <div class="message user">
-      <div class="messagerDetails">
-        <div class="avatar">Hakan E.</div>
-        <div class="timeStamp">10/19/23 10:25:54am</div> 
-      </div>
-      <div class="bubble">Hello YACA, glad I joined!</div>
-    </div>
-    <div class="message bot">
-      <div class="messagerDetails">
-        <div class="avatar">YACA Bot</div>
-        <div class="timeStamp">10/19/23 10:30:12am</div> 
-      </div>
-      <div class="bubble">Hi Hakan, how have u been? I've been meaning to txt you!</div>
-    </div>
+  <div class="body-container chatContainer" id="chatContainer">
   </div>
-  <div class="footer">
+  <form class="footer">
     <div class="messageContainer">
-      <input type="text" class="newMessage" id="name" name="name" 
+      <input type="text" class="newMessage" id="messageBox" 
       placeholder="Add your chat message here!" required>
       <button class="button messageButton" id="postBtn">Send!</button>
     </div>

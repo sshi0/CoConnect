@@ -40,6 +40,7 @@ body {
     height: 65vh;
     overflow-y: scroll;
     scroll-behavior: auto;
+    display: block
 }
 .friendList {
     background-color: white;
@@ -143,7 +144,7 @@ input {
     color: white;
 }
 .messageButton{
-    height: 60%;
+    height: 40px;
     font-size:16px;
     padding: 2px;
 }
@@ -168,15 +169,15 @@ input {
     align-items: center;
     margin: 10px;
     width: 80%;
-    height: 30%;
+    height: 20vh;
     background-color:darkslategrey;
     border-radius: 2vmin;
 }
 .bot {
-    align-self: flex-start;
+    margin-right: auto;
 }
 .user {
-    align-self: flex-end;
+    margin-left: auto;
 }
 .messagerDetails {
     display: flex;
@@ -188,11 +189,11 @@ input {
 }
 .avatar {
     display: flex;
-    padding: 10% 20%;
+    padding: 20% 5%;
     background-color: navy;
     color: white;
     text-align:center;
-    font-size: 16px;
+    font-size: 10px;
     font-family:system-ui;
     border-radius: 50%;
 }
@@ -263,7 +264,7 @@ input {
     text-align: top;
     margin: .5%;
     width: 70%;
-    height: 15%;
+    height: 18px;
 }
 .inviteCheck {
     margin: .5%;

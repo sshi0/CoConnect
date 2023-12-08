@@ -29,7 +29,7 @@ POST http://localhost:8080/auth/users/me@hakan.com
 Content-Type: application/json
 
 {
-"password": "Blah123"
+"password": "Blah123!"
 }
 ###
 
