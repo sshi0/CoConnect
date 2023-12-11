@@ -1,30 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="author" content="FirstName LastName (andrewid)" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="18351 class project" />
-    <link href="../styles.css" rel="stylesheet" type="text/css" />
-    <script src="../friends.ts" type="module" defer=""></script>
-    <title>YACA Friend List</title>
-    <style>
-        /* TODO */
-    </style>
+  <meta charset="utf-8" />
+  <meta name="author" content="FirstName LastName (andrewid)" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="18351 class project" />
+  <link href="../styles.css" rel="stylesheet" type="text/css" />
+  <script src="../friends.ts" type="module" defer=""></script>
+  <title>YACA Friend List</title>
 </head>
-
 <body>
-    <p>TODO...</p>
-    <p>Required elements:</p>
-    <ul>
-        <li>An input element with id="homeBtn"</li>
-        <li>An input element with id="syncBtn"</li>
-        <li>A div element with id="friendList" to contain all added friends</li>
-        <li>An form element with id="newFriendForm" to contain all the inputs needed for a new friend</li>
-        <li>An input element with type="submit" and id="addFriendBtn"</li>
-        </div>
-    </ul>
+  <div class="header">
+    <a href="./index.html">
+      <div class="button">Home</div>
+    </a>
+    <div class="chatTitle">My Friend List</div>
+    <div class="button">Sync</div>
+  </div>
+  <div class="body-container friendList" id="friendListContainer">
+  </div>
+  <form class="friendFooter" id="addFriend">
+    <div class="addFriendCol">
+      <label for="nameInput" class="friendLabel">Friend's Name:</label>
+      <input type="text" id="nameInput" name="name" class="friendInput" 
+      placeholder="Add friend's name" required>
+    </div>
+    <div class="addFriendCol">
+      <label for="emailInput" class="friendLabel">Friend's Email:</label>
+      <input type="email" id="emailInput" name="email" class="friendInput" 
+      placeholder="me@somedomain.com" required>
+    </div>
+    <button class="button friendButton" id="addFriendButton">
+              Add Friend</button>
+  </form>
+  <div class="clearFriends">
+    <button class="button clearfriendsButton" id="clearfriendsButton">
+    Clear Friends</button>
+  </div>
 </body>
-
 </html>

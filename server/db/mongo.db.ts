@@ -3,17 +3,25 @@
 
 import { IDatabase } from './dao';
 import mongoose from 'mongoose';
+import { v4 as uuidV4 } from 'uuid';
 import { Schema, model } from 'mongoose';
 import { IUser } from '../../common/user.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
-// import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
+import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
 
 const UserSchema = new Schema<IUser>({
-  // TODO
+  credentials : {
+    username: {type: String, required: true, unique: true},
+    password: {type: String, required: true}
+  },
+  extra: {type: String, required: false}
 });
 
 const ChatMessageSchema = new Schema<IChatMessage>({
-  // TODO
+  timestamp: {type: String, required: true},
+  _id: {type: String, required: true},
+  author: {type: String, required: true},
+  text: {type: String, required: true}
 });
 
 const MUser = model<IUser>('User', UserSchema);
@@ -32,11 +40,21 @@ export class MongoDB implements IDatabase {
   }
 
   async connect(): Promise<void> {
-    // TODO
+    // connect to MongoDB 
+    console.log(this.dbURL);
+    mongoose.connect(this.dbURL);
+    const db = mongoose.connection;
+    db.on('error', (err) => { // listen on connection errors
+      console.error(err); // if there is an error in connection, log it!
+    });
+    db.once('open', () => console.log('Connected to MongoDB'));
   }
 
   async init(): Promise<void> {
-    // TODO
+    // Initializes empty database for EARLY/DEV 
+    console.log("Initializing DB");
+    await MUser.deleteMany({});
+    await MChatMessage.deleteMany({});
   }
 
   async close(): Promise<void> {
@@ -44,32 +62,48 @@ export class MongoDB implements IDatabase {
   }
 
   async saveUser(user: IUser): Promise<IUser> {
-    // TODO
-    return user;
+    // Save user to MongoDB
+    const newUser = new MUser(user);
+    console.log("New User: " + newUser);
+    const savedUser: IUser = await newUser.save();
+    console.log("Saved User: " + savedUser);
+    return savedUser;
   }
 
   async findUserByUsername(username: string): Promise<IUser | null> {
-    // TODO
-    return null;
+    // Find one user by username
+    const user: IUser | null = await MUser.findOne({'credentials.username': username}).exec();
+    return user;
   }
 
   async findAllUsers(): Promise<IUser[]> {
-    // TODO
-    return [];
+    // Find all users
+    const users: IUser[] = await MUser.find({}).exec();
+    return users;
+  }
+
+  async updateUser(user: IUser): Promise<IUser | null> {
+    // Update data for one user
+    const filter = { 'credentials.username': user.credentials.username };
+    const update = { 'extra' : user.extra, credentials: { 'user': user.credentials.username, 'password': user.credentials.password } };
+    const updatedUser: IUser | null = await MUser.findOneAndUpdate({filter, update, new:true}).exec();
+    return updatedUser;
   }
 
   async saveChatMessage(message: IChatMessage): Promise<IChatMessage> {
-    // TODO
-    return message;
+    const newMessage = new MChatMessage(message);
+    console.log("New Message: " + newMessage);
+    const savedMessage = await newMessage.save();
+    return savedMessage;
   }
 
   async findAllChatMessages(): Promise<IChatMessage[]> {
-    // TODO
-    return [];
+    const messages: IChatMessage[] = await MChatMessage.find({}).exec();
+    return messages;
   }
 
   async findChatMessageById(_id: string): Promise<IChatMessage | null> {
-    // TODO
-    return null;
+    const message = await MChatMessage.findOne({'_id': _id}).exec();
+    return message;
   }
 }

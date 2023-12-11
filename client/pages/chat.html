@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="author" content="FirstName LastName (andrewid)" />
@@ -9,20 +8,23 @@
   <link href="../styles.css" rel="stylesheet" type="text/css" />
   <script src="../chat.ts" type="module" defer=""></script>
   <title>YACA Chat Room</title>
-  <style>
-    /* TODO */
-  </style>
 </head>
-
 <body>
-  <p>TODO...</p>
-  <p>Required elements:</p>
-  <ul>
-    <li>An input element with id="homeBtn"</li>
-    <li>A div element with id="existingChatMessages" to contain all posted chat messages</li>
-    <li>A textarea element with id="chatMessage" for enter a new chat message</li>
-    <li>An input element with id="postBtn" to post the chat message</li>
-  </ul>
+  <div class="header">
+    <a href="./index.html">
+      <div class="button">Home</div>
+    </a>
+    <div class="chatTitle">Chat away with YACA!</div>
+    <div class="button" id = "logOutBtn">Logout</div>
+  </div>
+  <div class="body-container chatContainer" id="chatContainer">
+  </div>
+  <form class="footer">
+    <div class="messageContainer">
+      <input type="text" class="newMessage" id="messageBox" 
+      placeholder="Add your chat message here!" required>
+      <button class="button messageButton" id="postBtn">Send!</button>
+    </div>
+  </div>
 </body>
-
 </html>

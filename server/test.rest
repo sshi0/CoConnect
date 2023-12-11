@@ -1,0 +1,129 @@
+// create a user hakan
+POST http://localhost:8080/auth/users
+Content-Type: application/json
+
+{
+"credentials": { "username": "me@hakan.com",
+"password": "Blah123!"
+},
+"extra": "hakan"
+}
+
+###
+
+// create a user serra
+POST http://localhost:8080/auth/users
+Content-Type: application/json
+
+{
+"credentials": { "username": "me@serra.com",
+"password": "bl@hbl@h"
+},
+"extra": "serra"
+}
+
+###
+
+// login for hakan with correct password
+POST http://localhost:8080/auth/users/me@hakan.com
+Content-Type: application/json
+
+{
+"password": "Blah123!"
+}
+###
+
+// valid (for user hakan) and invalid tokens
+@authTokenValid = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lQGhha2FuLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJDB6R2dGUXBpN1JuN21aWXNxOXZ1eXVxYy4wQWM1VmszMXZTdlhZMjcwQzZybkxvM2dxazMuIiwiaWF0IjoxNzAxOTg2MjIyfQ.D1tNn37u9uOvR4Dz61CS_GneMugiyGNXa86N4NhI6GA
+@authTokenInvalid = lol
+
+###
+
+// should succeed because authenticated user is posting for self
+POST http://localhost:8080/chat/messages
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+{
+"author": "me@hakan.com",
+"text": "another strange post"
+}
+
+###
+
+// get chat messages
+GET http://localhost:8080/chat/messages
+Authorization: Bearer {{authTokenValid}}
+
+
+###
+
+// login for hakan with incorrect password (fails)
+POST http://localhost:8080/auth/users/me@hakan.com
+Content-Type: application/json
+
+{
+"password": "incorrect"
+}
+
+###
+
+// get users with invalid token (fails)
+GET http://localhost:8080/chat/users/
+Content-Type: application/json
+Authorization: Bearer {{authTokenInvalid}}
+
+###
+
+// get users with valid token
+GET http://localhost:8080/chat/users/
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+###
+
+// login for hakan with no password (fails)
+POST http://localhost:8080/auth/users/hakan@me.com
+Content-Type: application/json
+
+###
+
+// get users with no token (fails)
+GET http://localhost:8080/chat/users/
+Content-Type: application/json
+
+###
+
+// should fail because user is not the author of the post
+POST http://localhost:8080/chat/messages
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+{
+"author": "me@serra.com",
+"text": "some strange post"
+}
+
+####
+
+// should fail because user doesn't exist
+POST http://localhost:8080/chat/messages
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+{
+"author": "someuser@blah.com",
+"text": "some strange post"
+}
+
+###
+
+/// should succeed because authorized user hakan can access his own info
+GET http://localhost:8080/chat/users/me@hakan.com
+Authorization: Bearer {{authTokenValid}}
+
+###
+
+/// should not succeed, because user is getting info on another user)
+GET http://localhost:8080/chat/users/me@serra.com
+Authorization: Bearer {{authTokenValid}}

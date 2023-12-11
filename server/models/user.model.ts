@@ -16,30 +16,96 @@ export class User implements IUser {
 
   constructor(credentials: ILogin, extra?: string) {
     this.credentials = credentials;
-    // TODO
+    this.extra = extra;
   }
 
   async join(): Promise<IUser> {
     // join YACA as a user, serving the register request
-    // TODO
-    return { credentials: { username: '', password: 'obfuscated' } };
+    console.log('Display Name: ' + this.extra + ' ' + !this.extra);
+    const isValidPassword = await User.checkPassword(this.credentials);
+    if (!this.credentials.username) {
+      throw new YacaError('Username empty', 'Username cannot be empty');
+    }
+    else if (!this.credentials.password) {
+      throw new YacaError('Password empty', 'Password cannot be empty');
+    }
+    else if (!this.extra) {
+      throw new YacaError('Display Name empty', 'Choose a display name');
+    }
+    else if (isValidPassword != null) {
+      throw new YacaError('Invalid Password', isValidPassword);
+    }
+    const username = this.credentials.username;
+    const existingUser = await User.getUserForUsername(this.credentials.username);
+    if (existingUser) {
+      throw new YacaError('User Exists', 'User already exists');
+    }
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(this.credentials.password, salt);
+    const extra = this.extra;
+    const user = { credentials: { username, password }, extra: extra };
+    console.log("Saving User: " + existingUser + " " + user.credentials.username + " " + user.credentials.password + " " + user.extra);
+    await DAO._db.saveUser(user);
+    return user;
   }
 
   async login(): Promise<IUser> {
     // login to  YACA with user credentials
-    // TODO
-    return { credentials: { username: '', password: 'obfuscated' } };
+    if (this.credentials.username == '') {
+      throw new YacaError('Username empty', 'Username cannot be empty');
+    }
+    else if (this.credentials.password == '') {
+      throw new YacaError('Password empty', 'Password cannot be empty');
+    }
+    const user = await User.getUserForUsername(this.credentials.username);
+    if (!user) {
+      throw new YacaError('Invalid Username', 'User not found');
+    }
+    else {
+      const match = await bcrypt.compare(this.credentials.password, user.credentials.password);
+      if (!match) {
+        throw new YacaError('Password Error', 'Incorrect password');
+      }
+    }
+    return this;
   }
 
-  static async getAllUsernames(): Promise<string[]> {
+  static async getAllUsers(): Promise<IUser[]> {
     // get the usernames of all users
-    // TODO
-    return [];
+    const users = await DAO._db.findAllUsers();
+    return users;
   }
 
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
-    // TODO
+    const user = await DAO._db.findUserByUsername(username);
+    return user;
+  }
+
+  static async validateCredentials(credentials: ILogin): Promise<IUser> {
+    // validate the credentials of a user
+    const user = await DAO._db.findUserByUsername(credentials.username);
+    if (!user) {
+      throw new YacaError('Invalid Token', 'Token is invalid');
+    }
+    return user;
+  }
+
+  static async updateUser(user: IUser): Promise<IUser | null> {
+    // update the data for a user
+    const updatedUser = await DAO._db.updateUser(user);
+    return updatedUser;
+  }
+
+  static async checkPassword(credentials: ILogin): Promise<string | null> {
+    // check the password of a user
+    if (credentials.password.length < 4) {return "Password too short, at least 4 characters"}
+    if (!/\d/.test(credentials.password)) {return "Pasword too weak, at least one digit"}
+    if (!/[a-zA-Z]/.test(credentials.password)) {return "Password too weak, at least one letter"}
+    const special = /['!', '@', '#', '$', '%', '^', '&', '~', '*', '-', '+']/;
+    if (!special.test(credentials.password)) {return "Password too weak, at least one special character"}
+    const invalid = /[^a-zA-Z\d\!\@\#\$\%\^\&\~\*\-\+]/;
+    if (invalid.test(credentials.password)) {return "Password contains invalid characters"}
     return null;
   }
 }

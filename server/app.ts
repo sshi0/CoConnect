@@ -3,16 +3,15 @@ import { Server as HttpServer, createServer } from 'http';
 import DAO, { IDatabase } from './db/dao';
 import Controller from './controllers/controller';
 import { ENV } from './env'; // for later
-// import { JWT_KEY as secretKey, JWT_EXP as tokenExpiry } from './env'; // for later
-// import { Server as SocketServer, Socket } from 'socket.io'; // for later
-// import { ClientToServerEvents, ServerToClientEvents } from '../common/socket.interface'; // for later
+import { JWT_KEY as secretKey, JWT_EXP as tokenExpiry } from './env'; 
+import { Server as SocketServer, Socket } from 'socket.io'; 
+import { ClientToServerEvents, ServerToClientEvents } from '../common/socket.interface'; 
 // other imports you need
 
-/* For later
 interface InterServerEvents {
   ping: () => void; // unused
 }
-*/
+
 
 class App {
   public app: Express;
@@ -29,7 +28,7 @@ class App {
 
   public server: HttpServer;
 
-  // public io: SocketServer; // for later
+  public io: SocketServer; 
 
   constructor(
     controllers: Controller[],
@@ -42,14 +41,12 @@ class App {
   ) {
     this.app = express();
     this.server = createServer(this.app);
-    /* // for later
-      this.io = new SocketServer<
+    this.io = new SocketServer<
       ClientToServerEvents,
       ServerToClientEvents,
-      InterServerEvents,
-      SocketData
+      InterServerEvents
+      //SocketData
       >(this.server); 
-    */
     this.port = params.port;
     this.db = params.db;
     this.host = params.host;
@@ -64,8 +61,10 @@ class App {
   private configureApp() {
     DAO.db = this.db;
     DAO.db.connect().then(() => {
-      // TODO
       // typically should initialize the DB to a blank state here if ENV === 'DEV' or ENV === 'EARLY'
+      if (ENV === 'DEV' || ENV === 'EARLY') {
+        DAO.db.init();
+      }
     });
   }
 
@@ -78,25 +77,25 @@ class App {
   }
 
   private configureControllers(controllers: Controller[]) {
-    //  Controller.io = this.io; // for later
+    Controller.io = this.io; 
     controllers.forEach((controller) => {
-      // TODO
+      this.app.use(controller.path, controller.router);
     });
   }
 
   public serverLogger(req: Request, res: Response, next: NextFunction) {
-    // TODO
+    console.log(req.method + ' ' + req.url)
+    console.log(res.statusCode)
+    console.log(req.body)
     next();
   }
 
   public async listen(): Promise<HttpServer> {
     // listen for incoming requests
     return new Promise<HttpServer>((resolve, reject) => {
-      /* // for later
-        this.io.on('connection', (socket: Socket) => {
+      this.io.on('connection', (socket: Socket) => {
          console.log('⚡️[Server]: A client connected to the socket server with id' + socket.id);
         });
-      */
       try {
         this.server.listen(this.port, () => {
           // must listen on http server, not express ap, for socket.io to work
