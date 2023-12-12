@@ -7,14 +7,22 @@ import { v4 as uuidV4 } from 'uuid';
 import { Schema, model } from 'mongoose';
 import { IUser } from '../../common/user.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
+import { IFriend } from '../../common/friend.interface';
 import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
+
+const FriendSchema = new Schema<IFriend>({
+  id: {type: String, required: true},
+  displayName: {type: String, required: true},
+  email: {type: String, required: true},
+});
 
 const UserSchema = new Schema<IUser>({
   credentials : {
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true}
   },
-  extra: {type: String, required: false}
+  extra: {type: String, required: false},
+  friends: [FriendSchema]
 });
 
 const ChatMessageSchema = new Schema<IChatMessage>({

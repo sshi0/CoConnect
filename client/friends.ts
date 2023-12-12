@@ -1,41 +1,15 @@
 import { v4 as uuidV4 } from 'uuid';
-
-export interface IFriend {
-  id: string;
-  displayName: string;
-  email: string;
-  invited: boolean;
-}
+import { IFriend } from '../common/friend.interface';
 
 function loadFriends(): IFriend[] { 
   // read friends from local storage
   const friendList = localStorage.getItem('friends');
-  let parsedFriends: IFriend[];
-  if (friendList) {
-    parsedFriends = JSON.parse(friendList);
-  } else {
-    parsedFriends = [
-      {
-        id: uuidV4(),
-        displayName: 'John Doe',
-        email: 'john.doe@somewhere.com',
-        invited: false,
-      },
-      {
-        id: uuidV4(),
-        displayName: 'Sarah Smith',
-        email: 'sarahs@blah.org',
-        invited: false,
-      }
-    ]
-  }
+  const parsedFriends = JSON.parse(friendList as string);
   return parsedFriends;
 }
 
-let friends: IFriend[] = loadFriends();
-
 function saveFriends(): void { 
-  // save friends to local storage
+  // save friends to database
   localStorage.setItem('friends', JSON.stringify(friends));
 }
 
@@ -63,9 +37,7 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
   // create an HTML friend element without any listeners attached
   const newFriend = document.createElement('div');
   newFriend.setAttribute('class', 'friend');
-  newFriend.setAttribute('id', friend.id);
-  if (friend.invited) newFriend.setAttribute('invited', 'yes');
-  else newFriend.setAttribute('invited', 'no');
+  newFriend.setAttribute('id', friend.id as string);
   newFriend.innerHTML = `
     <div class="friendDets">
       <input type="checkbox" class="inviteCheck">
@@ -88,20 +60,8 @@ function appendFriendElementToDocument(friendEmnt: HTMLElement): void {
 
 function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   // add required listeners to the HTML friend element
-  const friend = friends.find(f => f.id === friendEmnt.id);
   const delButton: HTMLButtonElement | null = 
                    friendEmnt.querySelector('button');
-  const invButton: HTMLInputElement | null = 
-                   friendEmnt.querySelector('input[type="checkbox"]');
-  if (invButton && friend) {
-    invButton.checked = friend.invited;
-    invButton.addEventListener('change', () => {
-      friend.invited = invButton.checked;
-      if (friend.invited) {
-        onInviteFriend(friend);
-      }
-    });
-  }
   if (delButton) {
     delButton.addEventListener('click', () => {
       const friendElement = document.getElementById(friendEmnt.id);
@@ -148,9 +108,8 @@ function onAddFriend(): void {
       id: uuidV4(),
       displayName: displayName,
       email: email,
-      invited: false,
     };
-    friends.push(newFriend);
+    
     saveFriends();
     const friendListContainer = document.getElementById('friendListContainer');
     if (friendListContainer) {
@@ -176,8 +135,25 @@ function onClearFriends(): void {
   }
 }
 
-loadFriendsIntoDocument();
-const addFriendForm = document.getElementById('addFriend');
-if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
-const clearfriendsButton = document.getElementById('clearfriendsButton');
-if (clearfriendsButton) clearfriendsButton.addEventListener('click', onClearFriends);
+async function isLoggedIn(): Promise<boolean> {
+  // determine whether the user is logged in
+  const jwtToken = localStorage.getItem('token');
+  const userCreds = localStorage.getItem('userCreds');
+  if (jwtToken && userCreds) {
+    return true;
+  }
+  return false;
+}
+
+const isUserLoggedIn = await isLoggedIn();
+if (!isUserLoggedIn) {
+  alert("You are not logged in, redirecting to authentication page");
+  window.location.href = "auth.html";
+}
+else {
+  loadFriendsIntoDocument();
+  const addFriendForm = document.getElementById('addFriend');
+  if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
+  const clearfriendsButton = document.getElementById('clearfriendsButton');
+  if (clearfriendsButton) clearfriendsButton.addEventListener('click', onClearFriends);
+}

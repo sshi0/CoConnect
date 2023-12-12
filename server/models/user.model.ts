@@ -6,13 +6,16 @@ import { v4 as uuidV4 } from 'uuid';
 import DAO from '../db/dao';
 import { YacaError, UnknownError } from '../../common/server.responses';
 import bcrypt from 'bcrypt';
+import { IFriend } from 'common/friend.interface';
 
 export class User implements IUser {
   credentials: ILogin;
 
   extra?: string; // this carries the displayName of the user
 
-  _id?: string;
+  _id?: string; // this carries the unique id of the user
+
+  friends?: IFriend[]; // this carries the list of friends of the user
 
   constructor(credentials: ILogin, extra?: string) {
     this.credentials = credentials;
@@ -69,6 +72,42 @@ export class User implements IUser {
     }
     return this;
   }
+
+  static async addNewFriend(username: string, friend: IFriend): Promise<IUser | null> {
+    // add a new friend to the user's friend list
+    const user = await DAO._db.findUserByUsername(username);
+    if (user) {
+      const friendExists = user.friends?.find((f) => f.email === friend.email);
+      if (friendExists) {
+        throw new YacaError('FriendExists', 'This friend already exists');
+      }
+      else if (friend.email === user.credentials.username) {
+        throw new YacaError('Adding ownself as friend', 'User trying to add himself as friend');
+      }
+      else {
+        user.friends?.push(friend);
+        await DAO._db.updateUser(user);
+      }
+    }
+    else {
+      throw new YacaError('UserNotFound', 'User not found');
+    }
+    return user;
+  }
+  
+  static async clearFriends(username: string): Promise<IUser | null> {
+    // clear the user's friend list
+    const user = await DAO._db.findUserByUsername(username);
+    if (user) {
+      user.friends = [];
+      await DAO._db.updateUser(user);
+    }
+    else {
+      throw new YacaError('UserNotFound', 'User not found');
+    }
+    return user;
+  }
+
 
   static async getAllUsers(): Promise<IUser[]> {
     // get the usernames of all users

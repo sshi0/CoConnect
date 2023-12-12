@@ -14,6 +14,7 @@ import { ILogin, IUser } from '../common/user.interface';
 import { get } from 'jquery';
 import {ServerToClientEvents, ClientToServerEvents} from '../common/socket.interface';
 import { parse } from 'path';
+
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 
 function onLogout(e: Event): void {
@@ -118,7 +119,6 @@ async function getChatMessages(): Promise<void> {
       });
       if (res.status === 201) {
         const data: ISuccess = res.data;
-        console.log("Get all messages success" + data);
         const payload = data?.payload as IChatMessage[];
         const chatMessages = payload;
         const chatContainer = document.getElementById('chatContainer');
@@ -160,7 +160,6 @@ document.addEventListener('DOMContentLoaded', async function (e: Event) {
   postButton?.addEventListener('click', onPost);
 });
 
-console.log("User is logged in: " + isLoggedIn());
 const isUserLoggedIn = await isLoggedIn();
 if (!isUserLoggedIn) {
   alert("You are not logged in, redirecting to authentication page");
