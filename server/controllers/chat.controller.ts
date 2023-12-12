@@ -52,7 +52,6 @@ export default class ChatController extends Controller {
         console.log(token + " " + secretKey)
         const decodedToken = jwt.verify(token, secretKey) as ILogin;
         console.log(decodedToken);
-        const user = User.validateCredentials(decodedToken);
         res.locals.authorizedUser = decodedToken.username;
         next();
       }
@@ -160,7 +159,8 @@ export default class ChatController extends Controller {
     }
     try {
       const message = req.body;
-      const newMessage = new ChatMessage( message.author, message.text );
+      const user = await User.getUserForUsername(message.author);
+      const newMessage = new ChatMessage( user?.extra as string, message.text );
       const postedMessage = await newMessage.post();
       console.log("Posted Message: " + postedMessage);
       if (postedMessage) {

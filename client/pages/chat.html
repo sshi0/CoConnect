@@ -7,22 +7,22 @@
   <meta name="description" content="18351 class project" />
   <link href="../styles.css" rel="stylesheet" type="text/css" />
   <script src="../chat.ts" type="module" defer=""></script>
-  <title>YACA Chat Room</title>
+  <title>coConnect | Chatroom</title>
 </head>
 <body>
   <div class="header">
     <a href="./index.html">
       <div class="button">Home</div>
     </a>
-    <div class="chatTitle">Chat away with YACA!</div>
+    <div class="chatTitle">Share your thoughts</div>
     <div class="button" id = "logOutBtn">Logout</div>
   </div>
   <div class="body-container chatContainer" id="chatContainer">
   </div>
-  <form class="footer">
+  <form class="footer chatFooter">
     <div class="messageContainer">
-      <input type="text" class="newMessage" id="messageBox" 
-      placeholder="Add your chat message here!" required>
+      <textarea class="newMessage" id="messageBox" 
+      placeholder="Add your message here" required></textarea>
       <button class="button messageButton" id="postBtn">Send!</button>
     </div>
   </div>

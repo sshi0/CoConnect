@@ -32,18 +32,19 @@ function makeChatMessage(
 ): HTMLElement {
   // create an HTML element that contains a chat message
   const msgElement = document.createElement('div');
-  const userCreds = localStorage.getItem('userCreds');
-  const parsedUserCreds: ILogin = JSON.parse(userCreds as string);
-  if (author === parsedUserCreds.username) {
+  const userExtra = JSON.parse(localStorage.getItem('userExtra') as string);
+   if (author === userExtra) {
     msgElement.setAttribute('class', 'message user');
   }
   else {
     msgElement.setAttribute('class', 'message bot');
   }
+  const newTimeStamp = new Date(timestamp as string);
+  const timeStampString = newTimeStamp.toLocaleDateString('en-US', {day: 'numeric', month: 'short'});
   msgElement.innerHTML = `
   <div class="messagerDetails">
       <div class="avatar">${author}</div>
-      <div class="timeStamp">${timestamp}</div> 
+      <div class="timeStamp">${timeStampString}</div> 
     </div>
   <div class="bubble">${text}</div>
   `;
@@ -97,9 +98,9 @@ async function onPost(e: Event) {
 
 function onNewChatMessage(chatMsg: IChatMessage): void {
   // eventhandler for websocket incoming new-chat-message
-  const userCreds = localStorage.getItem('userCreds');
-  const parsedUserCreds: ILogin = JSON.parse(userCreds as string);
-  if (chatMsg.author !== parsedUserCreds.username) {
+  const msgElement = document.createElement('div');
+  const userExtra = JSON.parse(localStorage.getItem('userExtra') as string);
+  if (chatMsg.author !== userExtra) {
   const chatContainer = document.getElementById('chatContainer');
   const msgElement = makeChatMessage(chatMsg.author, chatMsg.timestamp as string, chatMsg.text);
   chatContainer?.appendChild(msgElement);

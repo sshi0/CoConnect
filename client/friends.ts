@@ -168,7 +168,7 @@ function onAddFriend(): void {
 function onClearFriends(): void {
   // event handler to create a new friend from form info and 
   // append it to right HTML element in the document
-  const clearConfirm = confirm('Are you sure you want to clear all friends?');
+  const clearConfirm = confirm('Are you sure you want to clear all friends? This action is irreversible.');
   if (clearConfirm) {
     friends = [];
     saveFriends();
