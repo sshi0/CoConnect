@@ -6,7 +6,11 @@ Content-Type: application/json
 "credentials": { "username": "me@hakan.com",
 "password": "Blah123!"
 },
-"extra": "hakan"
+"extra": "hakan",
+"friends": [{
+"displayName": "steven",
+"email": "steven@gmail.com"
+}]
 }
 
 ###
@@ -60,6 +64,13 @@ Authorization: Bearer {{authTokenValid}}
 "displayName": "steven",
 "email": "steven@gmail.com"
 }
+
+###
+
+// should get friends for hakan
+GET http://localhost:8080/friends/me@hakan.com
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
 
 ###
 

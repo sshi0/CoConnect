@@ -17,9 +17,10 @@ export class User implements IUser {
 
   friends?: IFriend[]; // this carries the list of friends of the user
 
-  constructor(credentials: ILogin, extra?: string) {
+  constructor(credentials: ILogin, extra?: string, friends?: IFriend[]) {
     this.credentials = credentials;
     this.extra = extra;
+    this.friends = friends;
   }
 
   async join(): Promise<IUser> {
@@ -76,6 +77,7 @@ export class User implements IUser {
   static async addNewFriend(username: string, friend: IFriend): Promise<IUser | null> {
     // add a new friend to the user's friend list
     const user = await DAO._db.findUserByUsername(username);
+    let updatedUser;
     if (user) {
       const friendExists = user.friends?.find((f) => f.email === friend.email);
       if (friendExists) {
@@ -86,13 +88,13 @@ export class User implements IUser {
       }
       else {
         user.friends?.push(friend);
-        await DAO._db.updateUser(user);
+        updatedUser = await DAO._db.updateUser(user);
       }
     }
     else {
       throw new YacaError('UserNotFound', 'User not found');
     }
-    return user;
+    return updatedUser;
   }
   
   static async clearFriends(username: string): Promise<IUser | null> {

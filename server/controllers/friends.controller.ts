@@ -27,6 +27,7 @@ export default class FriendsController extends Controller {
   public initializeRoutes(): void {
     // this should define the route handled by the middleware friendsPage
     this.router.get('/', this.friendsPage);
+    this.router.get('/:username', this.authenticate, this.getFriends)
     this.router.post('/:username', this.authenticate, this.addFriend);
     this.router.patch('/:username', this.authenticate, this.clearFriends);
   }
@@ -55,6 +56,35 @@ export default class FriendsController extends Controller {
     else {
       const err = new YacaError('AuthenticationError', 'Missing authentication token');
       res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
+    }
+  }
+
+  public async getFriends(req: Request, res: Response) {
+    // get the user's friend list
+    const username = res.locals.authorizedUser;
+
+    try {
+      const user = await User.getUserForUsername(username);
+      console.log("Get friends: " + user);
+      if (user) {
+        const successRes: ISuccess = {
+          name: 'FriendsRetrieved',
+          message: 'Friends have been retrieved',
+          authorizedUser: res.locals.authorizedUser,
+          payload: user.friends as IFriend[]
+        };
+        res.status(201).json(successRes); // post success, sends success response
+      }
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        if (isClientError(err)) {
+          res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
+        } 
+        if (isUnknownError(err)) {
+          res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
+        }
+      }
     }
   }
 
