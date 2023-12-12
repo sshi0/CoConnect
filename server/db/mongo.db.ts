@@ -76,6 +76,12 @@ export class MongoDB implements IDatabase {
     return user;
   }
 
+  async findUserByDisplayName(displayName: string): Promise<IUser | null> {
+    // Find one user by username
+    const user: IUser | null = await MUser.findOne({'extra': displayName}).exec();
+    return user;
+  }
+
   async findAllUsers(): Promise<IUser[]> {
     // Find all users
     const users: IUser[] = await MUser.find({}).exec();

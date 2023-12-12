@@ -36,15 +36,15 @@ export class User implements IUser {
       throw new YacaError('Invalid Password', isValidPassword);
     }
     const username = this.credentials.username;
-    const existingUser = await User.getUserForUsername(this.credentials.username);
-    if (existingUser) {
+    const existingUsername = await User.getUserForUsername(this.credentials.username);
+    const existingDisplayName = await User.getUserForDisplayName(this.extra);
+    if (existingUsername || existingDisplayName) {
       throw new YacaError('User Exists', 'User already exists');
     }
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(this.credentials.password, salt);
     const extra = this.extra;
     const user = { credentials: { username, password }, extra: extra };
-    console.log("Saving User: " + existingUser + " " + user.credentials.username + " " + user.credentials.password + " " + user.extra);
     await DAO._db.saveUser(user);
     return user;
   }
@@ -79,6 +79,12 @@ export class User implements IUser {
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
     const user = await DAO._db.findUserByUsername(username);
+    return user;
+  }
+
+  static async getUserForDisplayName(username: string): Promise<IUser | null> {
+    // get the user having a given username
+    const user = await DAO._db.findUserByDisplayName(username);
     return user;
   }
 

@@ -98,7 +98,6 @@ async function onPost(e: Event) {
 
 function onNewChatMessage(chatMsg: IChatMessage): void {
   // eventhandler for websocket incoming new-chat-message
-  const msgElement = document.createElement('div');
   const userExtra = JSON.parse(localStorage.getItem('userExtra') as string);
   if (chatMsg.author !== userExtra) {
   const chatContainer = document.getElementById('chatContainer');
