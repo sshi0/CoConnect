@@ -96,6 +96,25 @@ export class User implements IUser {
     }
     return updatedUser;
   }
+
+  static async deleteFriend(username: string, friend: IFriend): Promise<IUser | null> {
+    const user = await DAO._db.findUserByUsername(username);
+    let updatedUser;
+    if (user) {
+      const friendExists = user.friends?.find((f) => f.email === friend.email);
+      if (!friendExists) {
+        throw new YacaError('FriendNotFound', 'Unable to delete non-existent friend');
+      }
+      else {
+        user.friends = user.friends?.filter((f) => f.email !== friend.email);
+        updatedUser = await DAO._db.updateUser(user);
+      }
+    }
+    else {
+      throw new YacaError('UserNotFound', 'User not found');
+    }
+    return updatedUser;
+  }
   
   static async clearFriends(username: string): Promise<IUser | null> {
     // clear the user's friend list

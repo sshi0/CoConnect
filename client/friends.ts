@@ -1,24 +1,16 @@
 import { v4 as uuidV4 } from 'uuid';
 import { IFriend } from '../common/friend.interface';
-
-function loadFriends(): IFriend[] { 
-  // read friends from local storage
-  const friendList = localStorage.getItem('friends');
-  const parsedFriends = JSON.parse(friendList as string);
-  return parsedFriends;
-}
-
-function saveFriends(): void { 
-  // save friends to database
-  localStorage.setItem('friends', JSON.stringify(friends));
-}
-
-function onDeleteFriend(id: string): void {
-  // event handler to remove an existing friend from local storage and the document
-  console.log(id);
-  friends = friends.filter((friend) => friend.id !== id);
-  saveFriends();
-}
+import axios, { AxiosResponse } from 'axios';
+import { IResponse } from '../common/server.responses';
+import { ILogin, IUser } from '../common/user.interface';
+import {
+  ISuccess,
+  YacaError,
+  UnknownError,
+  isClientError,
+  isISuccess,
+  isUnknownError
+} from '../common/server.responses';
 
 function onInviteFriend(friend: IFriend): void {
   // event handler to invite a friend by email when a checkbox is checked
@@ -37,7 +29,7 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
   // create an HTML friend element without any listeners attached
   const newFriend = document.createElement('div');
   newFriend.setAttribute('class', 'friend');
-  newFriend.setAttribute('id', friend.id as string);
+  newFriend.setAttribute('id', friend.email as string);
   newFriend.innerHTML = `
     <div class="friendDets">
       <input type="checkbox" class="inviteCheck">
@@ -55,6 +47,36 @@ function appendFriendElementToDocument(friendEmnt: HTMLElement): void {
   const friendListContainer = document.getElementById('friendListContainer'); 
   if (friendListContainer) {
     friendListContainer.appendChild(friendEmnt);
+  }
+}
+
+async function onDeleteFriend(id: string): Promise<void> {
+  // event handler to remove an existing friend from ldatabase
+  try {
+    const jwtToken = localStorage.getItem('token');
+    const res: AxiosResponse = await axios.request({
+      method: 'patch',
+      headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+      url: ('/friends/' + id),
+      validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+      });
+      if (res.status === 201) {
+        const data: ISuccess = res.data;
+        const payload = data?.payload as IUser;
+        const user = payload;
+        console.log("Deleted friend: " + user);
+      }
+      else if (res.status === 400) {
+        const data: YacaError = res.data;
+        alert('Delete friends failed, YACA Error: ' + data.message);
+      }
+      else {
+        const data: UnknownError = res.data;
+        alert('Delete friends failed, Unknown Error: ' + data.message);
+      }
+  }
+  catch (err) {
+    console.log("Unknown Error: " + err.message);
   }
 }
 
@@ -80,58 +102,134 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   return friendEmnt;
 }
 
-function loadFriendsIntoDocument(): void {
-  // read friends from local storage and add them to the document
-  loadFriends();
-  const friendListContainer = document.getElementById('friendListContainer');
-  if (friendListContainer) {
-    friendListContainer.innerHTML = '';
-    friends.forEach((friend) => {
-      const friendElmnt = createRawFriendElement(friend);
-      const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
-      appendFriendElementToDocument(friendWithBehavior);
-    });
+async function loadFriendsIntoDocument(): Promise<void> {
+  // read friends from database and add them to the document
+  try {
+    const jwtToken = localStorage.getItem('token');
+    const userCreds = JSON.parse(localStorage.getItem('userCreds') as string);
+    const res: AxiosResponse = await axios.request({
+      method: 'get',
+      headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+      url: ('/friends/' + userCreds.username),
+      validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+      });
+      if (res.status === 201) {
+        const data: ISuccess = res.data;
+        const payload = data?.payload as IFriend[];
+        const friends = payload;
+        const friendListContainer = document.getElementById('friendListContainer');
+        if (friendListContainer) {
+          friendListContainer.innerHTML = '';
+          friends.forEach((friend) => {
+            const friendElmnt = createRawFriendElement(friend);
+            const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
+            appendFriendElementToDocument(friendWithBehavior);
+          });
+        }
+      }
+      else if (res.status === 400) {
+        const data: YacaError = res.data;
+        alert('Load friends failed, YACA Error: ' + data.message);
+      }
+      else {
+        const data: UnknownError = res.data;
+        alert('Load friends failed, Unknown Error: ' + data.message);
+      }
+  }
+  catch (err) {
+    console.log("Unknown Error: " + err.message);
   }
 }
 
-function onAddFriend(): void {
+async function onAddFriend(): Promise<void> {
   // event handler to create a new friend from form info and 
+  // save it to database and 
   // append it to right HTML element in the document
   const displayNameInput = 
         <HTMLInputElement>document.getElementById('nameInput');
   const emailInput = 
         <HTMLInputElement>document.getElementById('emailInput');
-  if (displayNameInput && emailInput) {
-    const displayName = displayNameInput.value;
-    const email = emailInput.value;
-    const newFriend: IFriend = {
-      id: uuidV4(),
-      displayName: displayName,
-      email: email,
-    };
-    
-    saveFriends();
-    const friendListContainer = document.getElementById('friendListContainer');
-    if (friendListContainer) {
-      const friendElmnt = createRawFriendElement(newFriend);
-      const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
-      appendFriendElementToDocument(friendWithBehavior);
-    }
-
-    // Reset the form after adding a friend
-    displayNameInput.value = '';
-    emailInput.value = '';
+  const displayName = displayNameInput.value;
+  const email = emailInput.value;
+  const newFriend: IFriend = {
+    id: uuidV4(),
+    displayName: displayName,
+    email: email,
   }
+  try {
+    const jwtToken = localStorage.getItem('token');
+    const res: AxiosResponse = await axios.request({
+      method: 'post',
+      headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+      data: newFriend,
+      url: '/friends/' + newFriend.email,
+      validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+      });
+    if (res.status === 201) {
+      const data: ISuccess = res.data;
+      const payload = data?.payload as IUser;
+      console.log("Added friend: " + payload);
+      const friendListContainer = document.getElementById('friendListContainer');
+      if (friendListContainer) {
+        const friendElmnt = createRawFriendElement(newFriend);
+        const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
+        appendFriendElementToDocument(friendWithBehavior);
+      }
+      if (data.name === 'FriendNeedsInvite'){
+        const inviteConfirm = confirm('This friend has not registered yet. Do you want to invite them?');
+        if (inviteConfirm) {
+          onInviteFriend(newFriend);
+        }
+      }
+    }
+    else if (res.status === 400 || res.status === 401) {
+      const data: YacaError = res.data;
+      alert('Add Friends failed, ' + data.name + ": " + data.message);
+    }
+    else {
+      const data: UnknownError = res.data;
+      alert('Add Friends failed, Unknown Error: ' + data.message);
+    }
+  }
+  catch (err) {
+    console.log("Unknown Error: " + err.message);
+  }
+
+  displayNameInput.value = '';
+  emailInput.value = '';
 }
 
-function onClearFriends(): void {
-  // event handler to create a new friend from form info and 
-  // append it to right HTML element in the document
+async function onClearFriends(): Promise<void> {
+  // event handler to clear all friends from database and document
   const clearConfirm = confirm('Are you sure you want to clear all friends? This action is irreversible.');
   if (clearConfirm) {
-    friends = [];
-    saveFriends();
-    loadFriendsIntoDocument();
+    try {
+      const jwtToken = localStorage.getItem('token');
+      const res: AxiosResponse = await axios.request({
+        method: 'patch',
+        headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+        url: '/friends',
+        validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+        });
+      if (res.status === 201) {
+        const data: ISuccess = res.data;
+        const payload = data?.payload as IUser;
+        console.log("Cleared friends: " + payload);
+        loadFriendsIntoDocument();
+      }
+      else if (res.status === 400 || res.status === 401) {
+        const data: YacaError = res.data;
+        alert('Clear Friends failed, ' + data.name + ": " + data.message);
+      }
+      else {
+        const data: UnknownError = res.data;
+        alert('Clear Friends failed, Unknown Error: ' + data.message);
+      }
+    }
+    catch (err) {
+      console.log("Unknown Error: " + err.message);
+    }
+
   }
 }
 

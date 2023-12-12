@@ -29,7 +29,8 @@ export default class FriendsController extends Controller {
     this.router.get('/', this.friendsPage);
     this.router.get('/:username', this.authenticate, this.getFriends)
     this.router.post('/:username', this.authenticate, this.addFriend);
-    this.router.patch('/:username', this.authenticate, this.clearFriends);
+    this.router.patch('/:username', this.authenticate, this.deleteFriend);
+    this.router.patch('/', this.authenticate, this.clearFriends);
   }
 
   public friendsPage(req: Request, res: Response) {
@@ -129,10 +130,38 @@ export default class FriendsController extends Controller {
     }
   }
 
+  public async deleteFriend(req: Request, res: Response) {
+    // delete a friend from the user's friend list
+    const friend = req.body as IFriend;
+    const username = res.locals.authorizedUser;
+
+    try {
+      const user = await User.deleteFriend(username, friend);
+      if (user) {
+        const successRes: ISuccess = {
+          name: 'FriendDeleted',
+          message: 'Friend has been deleted',
+          authorizedUser: res.locals.authorizedUser,
+          payload: user
+        };
+        res.status(201).json(successRes); 
+      }
+    }
+    catch (err) {
+      if (err instanceof Error) {
+        if (isClientError(err)) {
+          res.status(400).json({name: err.name, message:err.message}); // user already exists, sends error response
+        } 
+        if (isUnknownError(err)) {
+          res.status(500).json({name: err.name, message:err.message}); // unknown error, sends error response
+        }
+      }
+    }
+  }
+
   public async clearFriends(req: Request, res: Response) {
     // clear the user's friend list
     const username = res.locals.authorizedUser;
-
     try {
       const user = await User.clearFriends(username);
       if (user) {
