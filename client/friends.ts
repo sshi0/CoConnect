@@ -165,6 +165,7 @@ async function onAddFriend(): Promise<void> {
       url: '/friends/' + newFriend.email,
       validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
       });
+    console.log(res.data);
     if (res.status === 201) {
       const data: ISuccess = res.data;
       const payload = data?.payload as IUser;
