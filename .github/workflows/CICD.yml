@@ -1,5 +1,5 @@
 # This is a basic workflow to help you get started with Actions
-# test CICD again
+# test CICD again x2
 
 name: CICD
 
@@ -61,4 +61,4 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: .dist # The folder the action should deploy.
+          folder: ./.dist # The folder the action should deploy.
