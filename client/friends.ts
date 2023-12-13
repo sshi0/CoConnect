@@ -62,8 +62,10 @@ async function onDeleteFriend(id: string): Promise<void> {
       if (res.status === 201) {
         const data: ISuccess = res.data;
         const payload = data?.payload as IUser;
-        const user = payload;
-        console.log("Deleted friend: " + user);
+        const user = payload as IUser;
+        const friends = user.friends as IFriend[];
+        const friendNames = friends.map((friend) => friend.displayName);
+        localStorage.setItem('friendNames', JSON.stringify(friendNames));
       }
       else if (res.status === 400) {
         const data: YacaError = res.data;
@@ -116,6 +118,8 @@ async function loadFriendsIntoDocument(): Promise<void> {
         const data: ISuccess = res.data;
         const payload = data?.payload as IFriend[];
         const friends = payload;
+        const friendNames = friends.map((friend) => friend.displayName);
+        localStorage.setItem('friendNames', JSON.stringify(friendNames));
         const friendListContainer = document.getElementById('friendListContainer');
         if (friendListContainer) {
           friendListContainer.innerHTML = '';
@@ -153,13 +157,12 @@ async function onAddFriend(): Promise<void> {
   const newFriend: IFriend = {
     id: uuidV4(),
     displayName: displayName,
-    email: "email",
+    email: email,
   }
 
   try {
     const jwtToken = localStorage.getItem('token');
     const userCreds = JSON.parse(localStorage.getItem('userCreds') as string);
-    console.log("User creds: " + userCreds);
     const res: AxiosResponse = await axios.request({
       method: 'post',
       headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
@@ -167,11 +170,13 @@ async function onAddFriend(): Promise<void> {
       url: ('/friends/' + userCreds.username),
       validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
       });
-    console.log("Status: " + res.status);
     if (res.status === 201) {
       const data: ISuccess = res.data;
-      const payload = data?.payload as IUser;
-      console.log("Added friend: " + payload);
+      const user = data?.payload as IUser;
+      const friends = user.friends as IFriend[];
+      const friendNames = friends.map((friend) => friend.displayName);
+      localStorage.setItem('friendNames', JSON.stringify(friendNames));
+      
       const friendListContainer = document.getElementById('friendListContainer');
       if (friendListContainer) {
         const friendElmnt = createRawFriendElement(newFriend);
@@ -215,8 +220,10 @@ async function onClearFriends(): Promise<void> {
         });
       if (res.status === 201) {
         const data: ISuccess = res.data;
-        const payload = data?.payload as IUser;
-        console.log("Cleared friends: " + payload);
+        const user = data?.payload as IUser;
+        const friends = user.friends as IFriend[];
+        const friendNames = friends.map((friend) => friend.displayName);
+        localStorage.setItem('friendNames', JSON.stringify(friendNames));
         loadFriendsIntoDocument();
       }
       else if (res.status === 400 || res.status === 401) {

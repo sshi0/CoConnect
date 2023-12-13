@@ -4,6 +4,7 @@
 import DAO from '../db/dao';
 import { v4 as uuidV4 } from 'uuid';
 import { IChatMessage } from '../../common/chatMessage.interface';
+import { IFriend } from '../../common/friend.interface';
 import { IUser } from '../../common/user.interface';
 import { YacaError, UnknownError } from '../../common/server.responses';
 import { User } from './user.model';
@@ -28,10 +29,18 @@ export class ChatMessage implements IChatMessage {
     return newMessage;
   }
 
-  static async getAllChatMessages(): Promise<IChatMessage[]> {
+  static async getAllFriendChatMessages(user: IUser): Promise<IChatMessage[]> {
     // get all chat messages
     const messages = await DAO._db.findAllChatMessages();
-    return messages;
+    const friends = user.friends as IFriend[];
+    const friendNames = friends.map((friend) => friend.displayName);
+    const friendMessages = (messages.filter((message) => (friendNames.includes(message.author) || message.author === user.extra as string)));
+    console.log(friendNames.includes(messages[0].author));
+    console.log(messages[0].author);
+    console.log("All Messages " + messages);
+    console.log("Friend Message " + friendMessages);
+    console.log("Friend Names " + friendNames);
+    return friendMessages;
   }
 
   // TODO
