@@ -23,6 +23,8 @@ function onLogout(e: Event): void {
   // decode token see who signed and compare with author of message so owner of author must be person posting the message
   localStorage.removeItem('token');
   localStorage.removeItem('userCreds');
+  localStorage.removeItem('userExtra');
+  localStorage.removeItem('friendNames');
   window.location.href = "auth.html"
 }
 
@@ -100,7 +102,10 @@ async function onPost(e: Event) {
 function onNewChatMessage(chatMsg: IChatMessage): void {
   // eventhandler for websocket incoming new-chat-message
   const userExtra = JSON.parse(localStorage.getItem('userExtra') as string);
-  if (chatMsg.author !== userExtra) {
+  const friendNames = JSON.parse(localStorage.getItem('friendNames') as string);
+  console.log("New chat message: " + chatMsg.author + " " + chatMsg.text);
+  console.log("check friend names: " + friendNames);
+  if (chatMsg.author !== userExtra && friendNames.includes(chatMsg.author)) {
   const chatContainer = document.getElementById('chatContainer');
   const msgElement = makeChatMessage(chatMsg.author, chatMsg.timestamp as string, chatMsg.text);
   chatContainer?.appendChild(msgElement);

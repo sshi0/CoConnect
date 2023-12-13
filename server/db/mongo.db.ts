@@ -108,7 +108,7 @@ export class MongoDB implements IDatabase {
   }
 
   async findAllChatMessages(): Promise<IChatMessage[]> {
-    const messages: IChatMessage[] = await MChatMessage.find({}).exec();
+    const messages: IChatMessage[] = await MChatMessage.find().exec();
     return messages;
   }
 

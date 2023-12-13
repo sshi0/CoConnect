@@ -19,6 +19,7 @@ import {
 } from '../../common/server.responses';
 import { Socket } from 'socket.io';
 import { io } from 'socket.io-client';
+import { IFriend } from 'common/friend.interface';
 
 export default class ChatController extends Controller {
   public router: Router = Router();
@@ -192,8 +193,13 @@ export default class ChatController extends Controller {
   public async getAllMessages(req: Request, res: Response) {
     // returns all chat message
     try {
-      console.log("Sent request for messages");
-      const messages = await ChatMessage.getAllChatMessages();
+      const user = await User.getUserForUsername(res.locals.authorizedUser);
+      if (!user) {
+        const err = new YacaError('InvalidUser', 'User does not exist');
+        res.status(401).json({name: err.name, message:err.message});
+        return; 
+      }
+      const messages = await ChatMessage.getAllFriendChatMessages(user);
       if (messages) {
         const successRes: ISuccess = {
           name: 'MessagesRetrieved',

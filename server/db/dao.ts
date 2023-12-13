@@ -3,6 +3,7 @@
 // It is used to decouple the database from the rest of the application
 // It is accessed by the models, which are used by the controllers
 
+import { IFriend } from 'common/friend.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
 import { IUser } from '../../common/user.interface';
 

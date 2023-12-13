@@ -35,10 +35,22 @@ Content-Type: application/json
 {
 "password": "Blah123!"
 }
+
+###
+
+// login for steven with correct password
+POST http://localhost:8080/auth/users/steven@gmail.com
+Content-Type: application/json
+
+{
+"password": "Steven23!"
+}
+
 ###
 
 // valid (for user hakan) and invalid tokens
 @authTokenValid = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lQGhha2FuLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJDB6R2dGUXBpN1JuN21aWXNxOXZ1eXVxYy4wQWM1VmszMXZTdlhZMjcwQzZybkxvM2dxazMuIiwiaWF0IjoxNzAxOTg2MjIyfQ.D1tNn37u9uOvR4Dz61CS_GneMugiyGNXa86N4NhI6GA
+@authTokenSteven = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN0ZXZlbkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IlN0ZXZlbjIzISIsImlhdCI6MTcwMjQ5OTIyNH0.7KxfRixJ_cRzPIjv12YV_rboLS99rBg6zI2nAmeOjXE
 @authTokenInvalid = lol
 
 ###
@@ -75,7 +87,7 @@ Authorization: Bearer {{authTokenValid}}
 ###
 
 // should clear hakan friends
-PATCH http://localhost:8080/friends/me@hakan.com
+PATCH http://localhost:8080/friends
 Content-Type: application/json
 Authorization: Bearer {{authTokenValid}}
 
@@ -95,6 +107,18 @@ Authorization: Bearer {{authTokenValid}}
 
 {
 "author": "me@hakan.com",
+"text": "another strange post"
+}
+
+###
+
+// should succeed because authenticated user is posting for self
+POST http://localhost:8080/chat/messages
+Content-Type: application/json
+Authorization: Bearer {{authTokenSteven}}
+
+{
+"author": "steven@gmail.com",
 "text": "another strange post"
 }
 
