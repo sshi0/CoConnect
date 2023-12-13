@@ -6,17 +6,21 @@ import { v4 as uuidV4 } from 'uuid';
 import DAO from '../db/dao';
 import { YacaError, UnknownError } from '../../common/server.responses';
 import bcrypt from 'bcrypt';
+import { IFriend } from 'common/friend.interface';
 
 export class User implements IUser {
   credentials: ILogin;
 
   extra?: string; // this carries the displayName of the user
 
-  _id?: string;
+  _id?: string; // this carries the unique id of the user
 
-  constructor(credentials: ILogin, extra?: string) {
+  friends?: IFriend[]; // this carries the list of friends of the user
+
+  constructor(credentials: ILogin, extra?: string, friends?: IFriend[]) {
     this.credentials = credentials;
     this.extra = extra;
+    this.friends = friends;
   }
 
   async join(): Promise<IUser> {
@@ -36,15 +40,15 @@ export class User implements IUser {
       throw new YacaError('Invalid Password', isValidPassword);
     }
     const username = this.credentials.username;
-    const existingUser = await User.getUserForUsername(this.credentials.username);
-    if (existingUser) {
+    const existingUsername = await User.getUserForUsername(this.credentials.username);
+    const existingDisplayName = await User.getUserForDisplayName(this.extra);
+    if (existingUsername || existingDisplayName) {
       throw new YacaError('User Exists', 'User already exists');
     }
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(this.credentials.password, salt);
     const extra = this.extra;
     const user = { credentials: { username, password }, extra: extra };
-    console.log("Saving User: " + existingUser + " " + user.credentials.username + " " + user.credentials.password + " " + user.extra);
     await DAO._db.saveUser(user);
     return user;
   }
@@ -70,6 +74,68 @@ export class User implements IUser {
     return this;
   }
 
+  static async addNewFriend(username: string, friend: IFriend): Promise<IUser | null> {
+    // add a new friend to the user's friend list
+    console.log("6");
+    const user = await DAO._db.findUserByUsername(username);
+    let updatedUser;
+    console.log("7");
+    if (user) {
+      console.log("8");
+      const friendExists = user.friends?.find((f) => f.email === friend.email);
+      if (friendExists) {
+        throw new YacaError('FriendExists', 'This friend already exists');
+      }
+      else if (friend.email === user.credentials.username) {
+        throw new YacaError('Adding ownself as friend', 'User trying to add himself as friend');
+      }
+      else {
+        user.friends?.push(friend);
+        updatedUser = await DAO._db.updateUser(user);
+      }
+    }
+    else {
+      throw new YacaError('UserNotFound', 'User not found');
+    }
+    console.log("9");
+    return updatedUser;
+  }
+
+  static async deleteFriend(username: string, friend: IFriend): Promise<IUser | null> {
+    const user = await DAO._db.findUserByUsername(username);
+    let updatedUser;
+    if (user) {
+      console.log("Friend list: " + user.friends);
+      console.log("Friend to delete: " + friend.email);
+      const friendExists = user.friends?.find((f) => f.email === friend.email);
+      if (!friendExists) {
+        throw new YacaError('FriendNotFound', 'Unable to delete non-existent friend');
+      }
+      else {
+        user.friends = user.friends?.filter((f) => f.email !== friend.email);
+        updatedUser = await DAO._db.updateUser(user);
+      }
+    }
+    else {
+      throw new YacaError('UserNotFound', 'User not found');
+    }
+    return updatedUser;
+  }
+  
+  static async clearFriends(username: string): Promise<IUser | null> {
+    // clear the user's friend list
+    const user = await DAO._db.findUserByUsername(username);
+    if (user) {
+      user.friends = [];
+      await DAO._db.updateUser(user);
+    }
+    else {
+      throw new YacaError('UserNotFound', 'User not found');
+    }
+    return user;
+  }
+
+
   static async getAllUsers(): Promise<IUser[]> {
     // get the usernames of all users
     const users = await DAO._db.findAllUsers();
@@ -79,6 +145,12 @@ export class User implements IUser {
   static async getUserForUsername(username: string): Promise<IUser | null> {
     // get the user having a given username
     const user = await DAO._db.findUserByUsername(username);
+    return user;
+  }
+
+  static async getUserForDisplayName(username: string): Promise<IUser | null> {
+    // get the user having a given username
+    const user = await DAO._db.findUserByDisplayName(username);
     return user;
   }
 

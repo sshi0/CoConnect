@@ -6,20 +6,24 @@ Content-Type: application/json
 "credentials": { "username": "me@hakan.com",
 "password": "Blah123!"
 },
-"extra": "hakan"
+"extra": "hakan",
+"friends": [{
+"displayName": "steven",
+"email": "steven@gmail.com"
+}]
 }
 
 ###
 
-// create a user serra
+// create a user steven
 POST http://localhost:8080/auth/users
 Content-Type: application/json
 
 {
-"credentials": { "username": "me@serra.com",
-"password": "bl@hbl@h"
+"credentials": { "username": "steven@gmail.com",
+"password": "Steven23!"
 },
-"extra": "serra"
+"extra": "steven"
 }
 
 ###
@@ -36,6 +40,51 @@ Content-Type: application/json
 // valid (for user hakan) and invalid tokens
 @authTokenValid = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lQGhha2FuLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJDB6R2dGUXBpN1JuN21aWXNxOXZ1eXVxYy4wQWM1VmszMXZTdlhZMjcwQzZybkxvM2dxazMuIiwiaWF0IjoxNzAxOTg2MjIyfQ.D1tNn37u9uOvR4Dz61CS_GneMugiyGNXa86N4NhI6GA
 @authTokenInvalid = lol
+
+###
+
+// should fail since adding friend to himself
+POST http://localhost:8080/friends/me@hakan.com
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+{
+"displayName": "hakan",
+"email": "me@hakan.com"
+}
+
+###
+
+// should add friend but show needs invite
+POST http://localhost:8080/friends/me@hakan.com
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+{
+"displayName": "steven",
+"email": "steven@gmail.com"
+}
+
+###
+
+// should get friends for hakan
+GET http://localhost:8080/friends/me@hakan.com
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+###
+
+// should clear hakan friends
+PATCH http://localhost:8080/friends/me@hakan.com
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+###
+
+// should delete friend steven from hakan
+PATCH http://localhost:8080/friends/steven@gmail.com
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
 
 ###
 

@@ -1,50 +1,16 @@
 import { v4 as uuidV4 } from 'uuid';
-
-export interface IFriend {
-  id: string;
-  displayName: string;
-  email: string;
-  invited: boolean;
-}
-
-function loadFriends(): IFriend[] { 
-  // read friends from local storage
-  const friendList = localStorage.getItem('friends');
-  let parsedFriends: IFriend[];
-  if (friendList) {
-    parsedFriends = JSON.parse(friendList);
-  } else {
-    parsedFriends = [
-      {
-        id: uuidV4(),
-        displayName: 'John Doe',
-        email: 'john.doe@somewhere.com',
-        invited: false,
-      },
-      {
-        id: uuidV4(),
-        displayName: 'Sarah Smith',
-        email: 'sarahs@blah.org',
-        invited: false,
-      }
-    ]
-  }
-  return parsedFriends;
-}
-
-let friends: IFriend[] = loadFriends();
-
-function saveFriends(): void { 
-  // save friends to local storage
-  localStorage.setItem('friends', JSON.stringify(friends));
-}
-
-function onDeleteFriend(id: string): void {
-  // event handler to remove an existing friend from local storage and the document
-  console.log(id);
-  friends = friends.filter((friend) => friend.id !== id);
-  saveFriends();
-}
+import { IFriend } from '../common/friend.interface';
+import axios, { AxiosResponse } from 'axios';
+import { IResponse } from '../common/server.responses';
+import { ILogin, IUser } from '../common/user.interface';
+import {
+  ISuccess,
+  YacaError,
+  UnknownError,
+  isClientError,
+  isISuccess,
+  isUnknownError
+} from '../common/server.responses';
 
 function onInviteFriend(friend: IFriend): void {
   // event handler to invite a friend by email when a checkbox is checked
@@ -63,12 +29,9 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
   // create an HTML friend element without any listeners attached
   const newFriend = document.createElement('div');
   newFriend.setAttribute('class', 'friend');
-  newFriend.setAttribute('id', friend.id);
-  if (friend.invited) newFriend.setAttribute('invited', 'yes');
-  else newFriend.setAttribute('invited', 'no');
+  newFriend.setAttribute('id', friend.email as string);
   newFriend.innerHTML = `
     <div class="friendDets">
-      <input type="checkbox" class="inviteCheck">
       Name: ${friend.displayName}
     </div>
     <button class="crossButton" id="removeFriendButton">&times</button>
@@ -86,22 +49,40 @@ function appendFriendElementToDocument(friendEmnt: HTMLElement): void {
   }
 }
 
+async function onDeleteFriend(id: string): Promise<void> {
+  // event handler to remove an existing friend from ldatabase
+  try {
+    const jwtToken = localStorage.getItem('token');
+    const res: AxiosResponse = await axios.request({
+      method: 'patch',
+      headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+      url: ('/friends/' + id),
+      validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+      });
+      if (res.status === 201) {
+        const data: ISuccess = res.data;
+        const payload = data?.payload as IUser;
+        const user = payload;
+        console.log("Deleted friend: " + user);
+      }
+      else if (res.status === 400) {
+        const data: YacaError = res.data;
+        alert('Delete friends failed, YACA Error: ' + data.message);
+      }
+      else {
+        const data: UnknownError = res.data;
+        alert('Delete friends failed, Unknown Error: ' + data.message);
+      }
+  }
+  catch (err) {
+    console.log("Unknown Error: " + err.message);
+  }
+}
+
 function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   // add required listeners to the HTML friend element
-  const friend = friends.find(f => f.id === friendEmnt.id);
   const delButton: HTMLButtonElement | null = 
                    friendEmnt.querySelector('button');
-  const invButton: HTMLInputElement | null = 
-                   friendEmnt.querySelector('input[type="checkbox"]');
-  if (invButton && friend) {
-    invButton.checked = friend.invited;
-    invButton.addEventListener('change', () => {
-      friend.invited = invButton.checked;
-      if (friend.invited) {
-        onInviteFriend(friend);
-      }
-    });
-  }
   if (delButton) {
     delButton.addEventListener('click', () => {
       const friendElement = document.getElementById(friendEmnt.id);
@@ -120,64 +101,159 @@ function addBehaviorToFriendElement(friendEmnt: HTMLElement): HTMLElement {
   return friendEmnt;
 }
 
-function loadFriendsIntoDocument(): void {
-  // read friends from local storage and add them to the document
-  loadFriends();
-  const friendListContainer = document.getElementById('friendListContainer');
-  if (friendListContainer) {
-    friendListContainer.innerHTML = '';
-    friends.forEach((friend) => {
-      const friendElmnt = createRawFriendElement(friend);
-      const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
-      appendFriendElementToDocument(friendWithBehavior);
-    });
+async function loadFriendsIntoDocument(): Promise<void> {
+  // read friends from database and add them to the document
+  try {
+    const jwtToken = localStorage.getItem('token');
+    const userCreds = JSON.parse(localStorage.getItem('userCreds') as string);
+    const res: AxiosResponse = await axios.request({
+      method: 'get',
+      headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+      url: ('/friends/' + userCreds.username),
+      validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+      });
+      if (res.status === 201) {
+        const data: ISuccess = res.data;
+        const payload = data?.payload as IFriend[];
+        const friends = payload;
+        const friendListContainer = document.getElementById('friendListContainer');
+        if (friendListContainer) {
+          friendListContainer.innerHTML = '';
+          friends.forEach((friend) => {
+            const friendElmnt = createRawFriendElement(friend);
+            const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
+            appendFriendElementToDocument(friendWithBehavior);
+          });
+        }
+      }
+      else if (res.status === 400) {
+        const data: YacaError = res.data;
+        alert('Load friends failed, YACA Error: ' + data.message);
+      }
+      else {
+        const data: UnknownError = res.data;
+        alert('Load friends failed, Unknown Error: ' + data.message);
+      }
+  }
+  catch (err) {
+    console.log("Unknown Error: " + err.message);
   }
 }
 
-function onAddFriend(): void {
+async function onAddFriend(): Promise<void> {
   // event handler to create a new friend from form info and 
+  // save it to database and 
   // append it to right HTML element in the document
   const displayNameInput = 
         <HTMLInputElement>document.getElementById('nameInput');
   const emailInput = 
         <HTMLInputElement>document.getElementById('emailInput');
-  if (displayNameInput && emailInput) {
-    const displayName = displayNameInput.value;
-    const email = emailInput.value;
-    const newFriend: IFriend = {
-      id: uuidV4(),
-      displayName: displayName,
-      email: email,
-      invited: false,
-    };
-    friends.push(newFriend);
-    saveFriends();
-    const friendListContainer = document.getElementById('friendListContainer');
-    if (friendListContainer) {
-      const friendElmnt = createRawFriendElement(newFriend);
-      const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
-      appendFriendElementToDocument(friendWithBehavior);
+  const displayName = displayNameInput.value;
+  const email = emailInput.value;
+  const newFriend: IFriend = {
+    id: uuidV4(),
+    displayName: displayName,
+    email: email,
+  }
+
+  try {
+    const jwtToken = localStorage.getItem('token');
+    const userCreds = JSON.parse(localStorage.getItem('userCreds') as string);
+    const res: AxiosResponse = await axios.request({
+      method: 'post',
+      headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+      data: newFriend,
+      url: ('/friends/' + userCreds.username),
+      validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+      });
+    alert("Data: " + res.data);
+    console.log("Status: " + res.status);
+    if (res.status === 201) {
+      const data: ISuccess = res.data;
+      const payload = data?.payload as IUser;
+      console.log("Added friend: " + payload);
+      const friendListContainer = document.getElementById('friendListContainer');
+      if (friendListContainer) {
+        const friendElmnt = createRawFriendElement(newFriend);
+        const friendWithBehavior = addBehaviorToFriendElement(friendElmnt);
+        appendFriendElementToDocument(friendWithBehavior);
+      }
+      if (data.name === 'FriendNeedsInvite'){
+        const inviteConfirm = confirm('This friend has not registered yet. Do you want to invite them?');
+        if (inviteConfirm) {
+          onInviteFriend(newFriend);
+        }
+      }
+    }
+    else if (res.status === 400 || res.status === 401) {
+      const data: YacaError = res.data;
+      alert('Add Friends failed, ' + data.name + ": " + data.message);
+    }
+    else {
+      const data: UnknownError = res.data;
+      alert('Add Friends failed, Unknown Error: ' + data.message);
+    }
+  }
+  catch (err) {
+    alert("Unknown Error: " + err.message);
+  }
+  displayNameInput.value = '';
+  emailInput.value = '';
+}
+
+async function onClearFriends(): Promise<void> {
+  // event handler to clear all friends from database and document
+  const clearConfirm = confirm('Are you sure you want to clear all friends? This action is irreversible.');
+  if (clearConfirm) {
+    try {
+      const jwtToken = localStorage.getItem('token');
+      const res: AxiosResponse = await axios.request({
+        method: 'patch',
+        headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
+        url: '/friends',
+        validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
+        });
+      if (res.status === 201) {
+        const data: ISuccess = res.data;
+        const payload = data?.payload as IUser;
+        console.log("Cleared friends: " + payload);
+        loadFriendsIntoDocument();
+      }
+      else if (res.status === 400 || res.status === 401) {
+        const data: YacaError = res.data;
+        alert('Clear Friends failed, ' + data.name + ": " + data.message);
+      }
+      else {
+        const data: UnknownError = res.data;
+        alert('Clear Friends failed, Unknown Error: ' + data.message);
+      }
+    }
+    catch (err) {
+      console.log("Unknown Error: " + err.message);
     }
 
-    // Reset the form after adding a friend
-    displayNameInput.value = '';
-    emailInput.value = '';
   }
 }
 
-function onClearFriends(): void {
-  // event handler to create a new friend from form info and 
-  // append it to right HTML element in the document
-  const clearConfirm = confirm('Are you sure you want to clear all friends?');
-  if (clearConfirm) {
-    friends = [];
-    saveFriends();
-    loadFriendsIntoDocument();
+async function isLoggedIn(): Promise<boolean> {
+  // determine whether the user is logged in
+  const jwtToken = localStorage.getItem('token');
+  const userCreds = localStorage.getItem('userCreds');
+  if (jwtToken && userCreds) {
+    return true;
   }
+  return false;
 }
 
-loadFriendsIntoDocument();
-const addFriendForm = document.getElementById('addFriend');
-if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
-const clearfriendsButton = document.getElementById('clearfriendsButton');
-if (clearfriendsButton) clearfriendsButton.addEventListener('click', onClearFriends);
+const isUserLoggedIn = await isLoggedIn();
+if (!isUserLoggedIn) {
+  alert("You are not logged in, redirecting to authentication page");
+  window.location.href = "auth.html";
+}
+else {
+  //loadFriendsIntoDocument();
+  const addFriendForm = document.getElementById('addFriend');
+  if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
+  const clearfriendsButton = document.getElementById('clearfriendsButton');
+  if (clearfriendsButton) clearfriendsButton.addEventListener('click', onClearFriends);
+}

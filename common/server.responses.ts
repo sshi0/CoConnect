@@ -1,5 +1,6 @@
 import { IUser, ILogin } from './user.interface';
 import { IChatMessage } from './chatMessage.interface';
+import { IFriend } from './friend.interface';
 
 // IResponse is the data type carried in a server response's body
 // Note that it's a union type
@@ -32,6 +33,8 @@ export interface ISuccess {
     | IChatMessage[]
     | IUser[]
     | IAuthenticatedUser
+    | IFriend
+    | IFriend[]
     | null;
 }
 

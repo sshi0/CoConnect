@@ -66,6 +66,7 @@ async function register(newUser: IUser) {
       const signedToken = payload.token;
       localStorage.setItem('token', signedToken);
       localStorage.setItem('userCreds', JSON.stringify(payload.user.credentials));
+      localStorage.setItem('userExtra', JSON.stringify(payload.user.extra));
       window.location.href = "chat.html";
     }
     else if (res.status === 400) {
@@ -115,9 +116,6 @@ async function onSubmitForm(e: SubmitEvent) {
     } else {
       // 
     }
-    nameInput.value = '';
-    emailInput.value = '';
-    passwordInput.value = '';
   }
 }
 

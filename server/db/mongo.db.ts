@@ -7,6 +7,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { Schema, model } from 'mongoose';
 import { IUser } from '../../common/user.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
+import { IFriend } from '../../common/friend.interface';
 import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
 
 const UserSchema = new Schema<IUser>({
@@ -14,7 +15,8 @@ const UserSchema = new Schema<IUser>({
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true}
   },
-  extra: {type: String, required: false}
+  extra: {type: String, required: false},
+  friends: {type: Array, required: false}
 });
 
 const ChatMessageSchema = new Schema<IChatMessage>({
@@ -64,15 +66,19 @@ export class MongoDB implements IDatabase {
   async saveUser(user: IUser): Promise<IUser> {
     // Save user to MongoDB
     const newUser = new MUser(user);
-    console.log("New User: " + newUser);
     const savedUser: IUser = await newUser.save();
-    console.log("Saved User: " + savedUser);
     return savedUser;
   }
 
   async findUserByUsername(username: string): Promise<IUser | null> {
     // Find one user by username
     const user: IUser | null = await MUser.findOne({'credentials.username': username}).exec();
+    return user;
+  }
+
+  async findUserByDisplayName(displayName: string): Promise<IUser | null> {
+    // Find one user by username
+    const user: IUser | null = await MUser.findOne({'extra': displayName}).exec();
     return user;
   }
 
@@ -84,15 +90,19 @@ export class MongoDB implements IDatabase {
 
   async updateUser(user: IUser): Promise<IUser | null> {
     // Update data for one user
-    const filter = { 'credentials.username': user.credentials.username };
-    const update = { 'extra' : user.extra, credentials: { 'user': user.credentials.username, 'password': user.credentials.password } };
-    const updatedUser: IUser | null = await MUser.findOneAndUpdate({filter, update, new:true}).exec();
+    const findUser = await MUser.findOne({'credentials.username': user.credentials.username}).exec();
+    const newUser = new MUser(user);
+    if (findUser) {
+      findUser.extra = newUser.extra;
+      findUser.friends = newUser.friends;
+      await findUser.save();
+    }
+    const updatedUser = await MUser.findOne({'credentials.username': user.credentials.username}).exec();
     return updatedUser;
   }
 
   async saveChatMessage(message: IChatMessage): Promise<IChatMessage> {
     const newMessage = new MChatMessage(message);
-    console.log("New Message: " + newMessage);
     const savedMessage = await newMessage.save();
     return savedMessage;
   }

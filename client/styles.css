@@ -1,5 +1,13 @@
 body {
-    background-color: white;
+    background-color: #f4faef;
+    font-family: Roboto, Helvetica, sans-serif;
+    font-weight:300;
+}
+.logo {
+    width: 30vw;
+    height: width/2;
+    margin-left: auto;
+    margin-right: auto;
 }
 .header {
     display: flex;
@@ -11,8 +19,8 @@ body {
     margin-left: auto;
     margin-right: auto;
     font-size: 30px;
-    font-weight: bold;
-    font-family:system-ui;
+    font-family: Roboto, Helvetica, sans-serif;
+    font-weight:300;
     white-space: nowrap;
 }
 .welcome {
@@ -27,37 +35,30 @@ body {
 .body-container {
     display: flex;
     flex-direction: column;
-    background-color:darkslategrey;
     align-items: center;
     margin-top: 50px;
     padding-bottom: 20px;
     border-radius: 2vmin;
 }
+.authText {
+    margin-bottom: 20px;
+    width: 30%
+}
+.authLabel {
+    font-size: 20px;
+}
 .chatContainer {
-    background-color: white;
     border-radius: 0;
-    border: 3px solid;
+    border: 3px solid rgba(0,0,0,0.2);
     height: 65vh;
-    overflow-y: scroll;
-    scroll-behavior: auto;
+    overflow-y: auto;
     display: block
 }
-.friendList {
-    background-color: white;
-    align-items: center;
-    height: 50vh;
-    overflow-y: scroll;
-    width:95%;
-    margin-left:auto;
-    margin-right:auto;
-}
 label {
-    color: white;
     font-size: 20px;
     text-align: left;
     width: 31vw;
     padding-top: 10px;
-    font-family:system-ui;
 }
 input {
     width: 30vw;
@@ -69,24 +70,33 @@ input {
 .button {
     display: flex;
     justify-content: flex-start;
-    background-color: white;
     color: black;
-    border: 2px solid;
-    padding: 10px 20px;
+    background-color: #d8d4de;
+    padding: 10px 40px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    border-width: 0;
     margin: 4px 2px;
-    font-family:system-ui;
+    font-family: Roboto, Helvetica, sans-serif;
     cursor: pointer;
     border-radius: 5px;
-    box-shadow: 5px 5px 5px black;
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+    text-transform: uppercase;
+    letter-spacing: 0.02857em;
+    font-weight:300;
 }
-.clearfriendsButton {
-    color: red;
-    font-size: 30px;
-    font-weight: bold;
+.button:hover {
+    background-color: #a7a2ad;
+    box-shadow:0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+}
+.welcomebutton {
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 20px;
 }
 .clearFriends {
     width: 100%;
@@ -96,13 +106,11 @@ input {
 .crossButton {
     color: red;
     font-size: 30px;
+    border: none;
+    background-color: transparent;
     padding: 0px;
     margin: 0px 0px;
-    border-radius: 5px;
-    font-family:system-ui;
-    font-weight: bold;
     margin-left:auto;
-    border: 2px solid;
     text-align:center;
     display: inline-block;
     cursor: pointer;
@@ -124,20 +132,13 @@ input {
     border-radius: 5px;
 }
 .friendButton {
-    font-size:13px;
-    padding: 5px;
-}
-.button:hover {
-    background-color: navy;
-    color: white;
+    margin-top: 1rem;
 }
 .crossButton:hover {
-    background-color: red;
-    color: white;
+    background-color: #c4c4c4;
 }
 .clearfriendsButton:hover {
-    background-color: red;
-    color: white;
+    background-color: #c4c4c4;
 }
 .inviteButton:hover {
     background-color: white;
@@ -147,21 +148,7 @@ input {
     height: 40px;
     font-size:16px;
     padding: 2px;
-}
-.welcomebutton {
-    background-color: white;
-    color: black;
-    border: 3px solid;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-    margin: 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    box-shadow: 5px 5px 5px black;
-    font-family:system-ui;
+    align-self: center;
 }
 .message {
     display: flex;
@@ -170,8 +157,24 @@ input {
     margin: 10px;
     width: 80%;
     height: 20vh;
-    background-color:darkslategrey;
+    background-color:#b2ac88;
     border-radius: 2vmin;
+    padding-right:20px;
+}
+.messageContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: top;
+    width: 100%;
+    height: 100%;
+    overflow-wrap: normal;
+    text-align:top;
+}
+.newMessage {
+    text-align: top;
+    margin: .5%;
+    width: 70%;
 }
 .bot {
     margin-right: auto;
@@ -184,56 +187,53 @@ input {
     flex-direction: col;
     justify-content: center;
     align-items: center;
-    width: 10%;
+    width: 15%;
     flex-wrap: wrap;
 }
 .avatar {
-    display: flex;
     padding: 20% 5%;
-    background-color: navy;
-    color: white;
     text-align:center;
-    font-size: 10px;
-    font-family:system-ui;
-    border-radius: 50%;
+    font-size: 25px;
+    width:100%;
+    height:50%;
 }
 .timeStamp {
     display: flex;
     padding: 7% 15%;
-    color: white;
+    padding-top: auto;
     text-align:center;
-    font-size: 10px;
-    font-family:system-ui;
+    font-size: 15px;
 }
 .bubble {
-    width: 80%;
+    flex:1;
     height: 70%;
     padding: 10px;
     border-radius: 2vmin;
-    background-color:#4C1C24;
+    border: 2px solid #99686e;
+    background-color: transparent;
     font-size: 16px;
-    color: white;
     margin: 4px 2px;
-    font-family:system-ui;
 }
 .footer {
     display: flex;
     flex-direction: col;
-    background-color: white;
     align-items: top;
     margin-top: 10px;
     padding-bottom: 20px;
-    height: 20vh;
 }
 .friendFooter {
     display: flex;
     flex-direction: row;
-    background-color: #4c3a47;
+    background-color: #98a191;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     border-radius: 2vmin;
     padding: 1vmin;
+}
+.chatFooter {
+    height: 15vh;
+    padding: 0;
 }
 .addFriendCol {
     display: flex;
@@ -252,24 +252,20 @@ input {
     justify-content:center;
     padding-left:4px;
 }
-.messageContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: top;
-    width: 100%;
-    height: 10vmin;
+.friendList {
+    align-items: center;
+    height: 50vh;
+    overflow-y: auto;
+    width:95%;
+    margin-left:auto;
+    margin-right:auto;
 }
-.newMessage {
-    text-align: top;
-    margin: .5%;
-    width: 70%;
-    height: 18px;
-}
-.inviteCheck {
-    margin: .5%;
-    width: 15px;
-    height: 15px;
+.friendDets {
+    font-size: 20px;
+    text-align: left;
+    justify-self: center;
+    width: 80%;
+    padding-bottom: 1vmin;
 }
 .friend {
     display: flex;
@@ -277,19 +273,15 @@ input {
     width: 97%;
     padding: 1vmin;
     border-radius: 2vmin;
-    background-color:darkslategrey;
+    background-color: #b2ac88;
     margin: 1vmin;
     flex-wrap: wrap;
     align-items: center;
 }
-.friendDets {
-    color: white;
-    font-size: 20px;
-    text-align: left;
-    justify-self: center;
-    font-family:system-ui;
-    width: 80%;
-    padding-bottom: 1vmin;
+.inviteCheck {
+    margin: .5%;
+    width: 15px;
+    height: 15px;
 }
 .aboutText {
     color: white;

@@ -17,6 +17,8 @@ export interface IDatabase {
 
   findUserByUsername(username: string): Promise<IUser | null>;
 
+  findUserByDisplayName(username: string): Promise<IUser | null>;
+
   findAllUsers(): Promise<IUser[]>;
 
   updateUser(user: IUser): Promise<IUser | null> 

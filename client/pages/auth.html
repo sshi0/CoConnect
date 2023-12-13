@@ -7,26 +7,23 @@
   <meta name="description" content="18351 class project" />
   <link href="../styles.css" rel="stylesheet" type="text/css" />
   <script src="../auth.ts" type="module" defer=""></script>
-  <title>YACA Authentication</title>
+  <title>coConnect | Login</title>
 </head>
 <body>
   <div class="header">
     <a href="./index.html">
       <div class="button">Home</div>
     </a>
-    <div class="chatTitle">Enter Chat Room</div>
+    <div class="chatTitle">Welcome to coConnect</div>
     <div class="button" style="visibility: hidden"></div>
   </div>
   <form class="body-container" id="authForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" 
-    placeholder="Required for registration">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" 
-    placeholder="me@somedomain.com" required>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" 
-    placeholder="a strong password" required>
+    <label for="name" class="authLabel">Name:</label>
+    <input type="text" id="name" name="name" class="authText">
+    <label for="email" class="authLabel">Email:</label>
+    <input type="email" id="email" name="email" class="authText" required>
+    <label for="password" class="authLabel">Password:</label>
+    <input type="password" id="password" name="password" class="authText" required>
     <div class="button-container">
       <button class="button" id="registerBtn">Register</button>
       <button class="button" id="loginBtn">Login</button>

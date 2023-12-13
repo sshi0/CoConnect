@@ -52,7 +52,6 @@ export default class ChatController extends Controller {
         console.log(token + " " + secretKey)
         const decodedToken = jwt.verify(token, secretKey) as ILogin;
         console.log(decodedToken);
-        const user = User.validateCredentials(decodedToken);
         res.locals.authorizedUser = decodedToken.username;
         next();
       }
@@ -127,6 +126,10 @@ export default class ChatController extends Controller {
 
   public async getUser(req: Request, res: Response) {
     // gets one user with username given in url
+    if (req.params.username != res.locals.authorizedUser) {
+      const err = new YacaError('AuthorizationError', 'User is not authorized to get this user');
+      res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
+    }
     try {
       const username = req.params.username;
       const user = await User.getUserForUsername(username);
@@ -160,9 +163,9 @@ export default class ChatController extends Controller {
     }
     try {
       const message = req.body;
-      const newMessage = new ChatMessage( message.author, message.text );
+      const user = await User.getUserForUsername(message.author);
+      const newMessage = new ChatMessage( user?.extra as string, message.text );
       const postedMessage = await newMessage.post();
-      console.log("Posted Message: " + postedMessage);
       if (postedMessage) {
         const successRes: ISuccess = {
           name: 'MessagePosted',
