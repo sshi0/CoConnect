@@ -1,0 +1,63 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+jobs:
+  build-test:
+    name: Integrate
+    if: true
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+      - run: echo "Job auto-triggered by a ${{ github.event_name }} event..."
+      - run: echo "Running on a ${{ runner.os }} server hosted by GitHub..."
+      - run: echo "For branch ${{ github.ref }} of repo ${{ github.repository }}..."
+      - name: Check out repository code...
+        uses: actions/checkout@v3
+      - name: Create env file...
+        env: 
+          DOT_ENV: ${{ secrets.DOT_ENV }}
+        run: | 
+          touch .env
+          echo "MY_VAR=xyz" >> .env
+          echo "${{ env.DOT_ENV }}" >> .env
+          echo -- Environment Vars
+          cat .env
+      - name: Setup Node.js with version ${{ matrix.node-version }}...
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Clean install npm...
+        run: npm ci
+      - name: Check with Eslint...
+        run: npm run lint
+      - name: Build project...
+        run: npm run build
+      - name: Run client tests...
+        if: false
+        run: npm run test:client
+      - name: Run server tests...
+        if: false
+        run: npm run test:server
+  deploy:
+    name: Deploy to github pages
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Job auto-triggered by a ${{ github.event_name }} event..."
+      - run: echo "Running on a ${{ runner.os }} server hosted by GitHub..."
+      - run: echo "For branch ${{ github.ref }} of repo ${{ github.repository }}..."
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build # The folder the action should deploy.
