@@ -93,16 +93,11 @@ export default class FriendsController extends Controller {
     // add a friend to the user's friend list
     const friend = req.body as IFriend;
     const username = res.locals.authorizedUser;
-    console.log("1");
     try {
-      console.log("2");
       const user = await User.addNewFriend(username, friend);
-      console.log("3 " + username);
       const userFriend = await User.getUserForUsername(friend.email);
-      console.log("4");
       if (user) {
         if (userFriend) {
-          console.log("5");
           const successRes: ISuccess = {
             name: 'FriendAdded',
             message: 'Friend has been added',
@@ -112,14 +107,12 @@ export default class FriendsController extends Controller {
           res.status(201).json(successRes); 
         }
         else {
-          console.log("10");
           const successRes: ISuccess = {
-            // name: 'FriendNeedsInvite',
-            // message: 'Friend has been added but has not registered yet',
-            // authorizedUser: res.locals.authorizedUser,
-            // payload: user
+            name: 'FriendNeedsInvite',
+            message: 'Friend has been added but has not registered yet',
+            authorizedUser: res.locals.authorizedUser,
+            payload: user
           };
-          console.log("send it back???");
           res.status(201).json(successRes); 
         }
       }
