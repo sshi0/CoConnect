@@ -114,10 +114,10 @@ export default class FriendsController extends Controller {
         else {
           console.log("10");
           const successRes: ISuccess = {
-            // name: 'FriendNeedsInvite',
-            // message: 'Friend has been added but has not registered yet',
-            // authorizedUser: res.locals.authorizedUser,
-            // payload: user
+            name: 'FriendNeedsInvite',
+            message: 'Friend has been added but has not registered yet',
+            authorizedUser: res.locals.authorizedUser,
+            payload: user
           };
           console.log("send it back???");
           res.status(201).json(successRes); 
