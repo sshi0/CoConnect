@@ -153,12 +153,13 @@ async function onAddFriend(): Promise<void> {
   const newFriend: IFriend = {
     id: uuidV4(),
     displayName: displayName,
-    email: email,
+    email: "email",
   }
 
   try {
     const jwtToken = localStorage.getItem('token');
     const userCreds = JSON.parse(localStorage.getItem('userCreds') as string);
+    console.log("User creds: " + userCreds);
     const res: AxiosResponse = await axios.request({
       method: 'post',
       headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
@@ -166,7 +167,6 @@ async function onAddFriend(): Promise<void> {
       url: ('/friends/' + userCreds.username),
       validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
       });
-    alert("Data: " + res.data);
     console.log("Status: " + res.status);
     if (res.status === 201) {
       const data: ISuccess = res.data;
@@ -251,9 +251,9 @@ if (!isUserLoggedIn) {
   window.location.href = "auth.html";
 }
 else {
-  //loadFriendsIntoDocument();
-  const addFriendForm = document.getElementById('addFriend');
-  if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
+  loadFriendsIntoDocument();
+  const addFriendForm = document.getElementById('addFriendButton');
+  if (addFriendForm) addFriendForm.addEventListener('click', onAddFriend);
   const clearfriendsButton = document.getElementById('clearfriendsButton');
   if (clearfriendsButton) clearfriendsButton.addEventListener('click', onClearFriends);
 }
