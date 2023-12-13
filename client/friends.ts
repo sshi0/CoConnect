@@ -32,7 +32,6 @@ function createRawFriendElement(friend: IFriend): HTMLElement {
   newFriend.setAttribute('id', friend.email as string);
   newFriend.innerHTML = `
     <div class="friendDets">
-      <input type="checkbox" class="inviteCheck">
       Name: ${friend.displayName}
     </div>
     <button class="crossButton" id="removeFriendButton">&times</button>
@@ -156,16 +155,19 @@ async function onAddFriend(): Promise<void> {
     displayName: displayName,
     email: email,
   }
+
   try {
     const jwtToken = localStorage.getItem('token');
+    const userCreds = JSON.parse(localStorage.getItem('userCreds') as string);
     const res: AxiosResponse = await axios.request({
       method: 'post',
       headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
       data: newFriend,
-      url: '/friends/' + newFriend.email,
+      url: ('/friends/' + userCreds.username),
       validateStatus: () => true // this allows axios to resolve the request and prevents axios from throwing an error
       });
-    console.log(res.data);
+    alert("Data: " + res.data);
+    console.log("Status: " + res.status);
     if (res.status === 201) {
       const data: ISuccess = res.data;
       const payload = data?.payload as IUser;
@@ -193,9 +195,8 @@ async function onAddFriend(): Promise<void> {
     }
   }
   catch (err) {
-    console.log("Unknown Error: " + err.message);
+    alert("Unknown Error: " + err.message);
   }
-
   displayNameInput.value = '';
   emailInput.value = '';
 }
@@ -250,7 +251,7 @@ if (!isUserLoggedIn) {
   window.location.href = "auth.html";
 }
 else {
-  loadFriendsIntoDocument();
+  //loadFriendsIntoDocument();
   const addFriendForm = document.getElementById('addFriend');
   if (addFriendForm) addFriendForm.addEventListener('submit', onAddFriend);
   const clearfriendsButton = document.getElementById('clearfriendsButton');

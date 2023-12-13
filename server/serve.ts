@@ -19,7 +19,7 @@ const app = new App(
   ],
   {
     clientDir: path.join(__dirname, '../.dist/client'),
-    db: ENV === 'EARLY' ? new InMemoryDB() : new MongoDB(dbURL),
+    db: new MongoDB(dbURL),
     port: PORT,
     host: HOST
   }

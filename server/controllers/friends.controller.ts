@@ -29,7 +29,7 @@ export default class FriendsController extends Controller {
     this.router.get('/', this.friendsPage);
     this.router.get('/:username', this.authenticate, this.getFriends)
     this.router.post('/:username', this.authenticate, this.addFriend);
-    this.router.patch('/:username', this.authenticate, this.deleteFriend);
+    this.router.patch('/:friendUsername', this.authenticate, this.deleteFriend);
     this.router.patch('/', this.authenticate, this.clearFriends);
   }
 
@@ -93,12 +93,16 @@ export default class FriendsController extends Controller {
     // add a friend to the user's friend list
     const friend = req.body as IFriend;
     const username = res.locals.authorizedUser;
-
+    console.log("1");
     try {
+      console.log("2");
       const user = await User.addNewFriend(username, friend);
+      console.log("3 " + username);
       const userFriend = await User.getUserForUsername(friend.email);
+      console.log("4");
       if (user) {
         if (userFriend) {
+          console.log("5");
           const successRes: ISuccess = {
             name: 'FriendAdded',
             message: 'Friend has been added',
@@ -108,12 +112,14 @@ export default class FriendsController extends Controller {
           res.status(201).json(successRes); 
         }
         else {
+          console.log("10");
           const successRes: ISuccess = {
-            name: 'FriendNeedsInvite',
-            message: 'Friend has been added but has not registered yet',
-            authorizedUser: res.locals.authorizedUser,
-            payload: user
+            // name: 'FriendNeedsInvite',
+            // message: 'Friend has been added but has not registered yet',
+            // authorizedUser: res.locals.authorizedUser,
+            // payload: user
           };
+          console.log("send it back???");
           res.status(201).json(successRes); 
         }
       }
@@ -132,12 +138,17 @@ export default class FriendsController extends Controller {
 
   public async deleteFriend(req: Request, res: Response) {
     // delete a friend from the user's friend list
-    const friend = req.body as IFriend;
     const username = res.locals.authorizedUser;
+    const user = await User.getUserForUsername(username) as IUser;
+    const friendEmail = req.params.friendUsername;
+    const friend = user.friends?.find((f) => f.email === friendEmail);
 
     try {
-      const user = await User.deleteFriend(username, friend);
-      if (user) {
+      if (!friend) {
+        throw new YacaError('FriendNotFound', 'Unable to delete non-existent friend');
+      }
+      const updatedUser = await User.deleteFriend(username, friend);
+      if (updatedUser) {
         const successRes: ISuccess = {
           name: 'FriendDeleted',
           message: 'Friend has been deleted',

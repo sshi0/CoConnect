@@ -56,7 +56,7 @@ async function postChatMessage(chatMsg: IChatMessage): Promise<void> {
   // save chat message on the server
   try {
     const jwtToken = localStorage.getItem('token');
-    const res: AxiosResponse = await axios.request({
+    const res = await axios.request({
       method: 'post',
       headers: { Authorization: `Bearer ${jwtToken}` }, // add the token to the header
       data: chatMsg,

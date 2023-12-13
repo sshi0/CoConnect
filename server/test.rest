@@ -81,6 +81,13 @@ Authorization: Bearer {{authTokenValid}}
 
 ###
 
+// should delete friend steven from hakan
+PATCH http://localhost:8080/friends/steven@gmail.com
+Content-Type: application/json
+Authorization: Bearer {{authTokenValid}}
+
+###
+
 // should succeed because authenticated user is posting for self
 POST http://localhost:8080/chat/messages
 Content-Type: application/json
