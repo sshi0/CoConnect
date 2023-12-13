@@ -59,6 +59,4 @@ jobs:
       - run: echo "Running on a ${{ runner.os }} server hosted by GitHub..."
       - run: echo "For branch ${{ github.ref }} of repo ${{ github.repository }}..."
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: ./.dist # The folder the action should deploy.
+        uses: actions/deploy-pages@v3
