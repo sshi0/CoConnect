@@ -3,7 +3,7 @@ import { IAuthenticatedUser, IResponse } from '../common/server.responses';
 import { IUser } from '../common/user.interface';
 import {
   ISuccess,
-  YacaError,
+  ClientError,
   UnknownError,
   isClientError,
   isISuccess,
@@ -34,8 +34,8 @@ async function login(user: IUser) {
       window.location.href = "chat.html";
     }
     else if (res.status === 400) {
-      const data: YacaError = res.data;
-      alert('Registration failed, YACA Error: ' + data.message);
+      const data: ClientError = res.data;
+      alert('Registration failed, Client Error: ' + data.message);
     }
     else {
       const data: UnknownError = res.data;
@@ -60,7 +60,7 @@ async function register(newUser: IUser) {
       }
     );
     if (res.status === 201 && res.data) {
-      alert('Registration successful, welcome to YACA ' + newUser.extra);
+      alert('Registration successful, welcome to coConnect ' + newUser.extra);
       const data: ISuccess = res.data;
       const payload = data?.payload as IAuthenticatedUser;
       const signedToken = payload.token;
@@ -70,8 +70,8 @@ async function register(newUser: IUser) {
       window.location.href = "chat.html";
     }
     else if (res.status === 400) {
-      const data: YacaError = res.data;
-      alert('Registration failed, YACA Error: ' + data.message);
+      const data: ClientError = res.data;
+      alert('Registration failed, Client Error: ' + data.message);
     }
     else if (res.status === 500){
       const data: UnknownError = res.data;

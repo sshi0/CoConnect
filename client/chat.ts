@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios';
 import { IResponse } from '../common/server.responses';
 import {
   ISuccess,
-  YacaError,
+  ClientError,
   UnknownError,
   isClientError,
   isISuccess,
@@ -74,7 +74,7 @@ async function postChatMessage(chatMsg: IChatMessage): Promise<void> {
       chatContainer?.appendChild(msgElement);
     }
     else if (res.status === 400 || res.status === 401) {
-      const data: YacaError = res.data;
+      const data: ClientError = res.data;
       alert('Post message failed, ' + data.name + ": " + data.message);
     }
     else {
@@ -133,8 +133,8 @@ async function getChatMessages(): Promise<void> {
         })
       }
       else if (res.status === 400) {
-        const data: YacaError = res.data;
-        alert('Post message failed, YACA Error: ' + data.message);
+        const data: ClientError = res.data;
+        alert('Post message failed, Client Error: ' + data.message);
       }
       else {
         const data: UnknownError = res.data;

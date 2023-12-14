@@ -6,7 +6,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { IChatMessage } from '../../common/chatMessage.interface';
 import { IFriend } from '../../common/friend.interface';
 import { IUser } from '../../common/user.interface';
-import { YacaError, UnknownError } from '../../common/server.responses';
+import { ClientError, UnknownError } from '../../common/server.responses';
 import { User } from './user.model';
 import { io } from 'socket.io-client';
 

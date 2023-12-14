@@ -5,7 +5,7 @@
 import { IDatabase } from './dao';
 import { IChatMessage } from '../../common/chatMessage.interface';
 import { IUser } from '../../common/user.interface';
-import { YacaError, UnknownError } from '../../common/server.responses';
+import { ClientError, UnknownError } from '../../common/server.responses';
 
 export class InMemoryDB implements IDatabase {
   private users: IUser[] = [];
@@ -30,6 +30,11 @@ export class InMemoryDB implements IDatabase {
 
   async findUserByUsername(username: string): Promise<IUser | null> {
     const user = this.users.find((userDB) => userDB.credentials.username === username);
+    return (user) ? user : null;
+  }
+
+  async findUserByDisplayName(displayName: string): Promise<IUser | null> {
+    const user = this.users.find((userDB) => userDB.extra === displayName);
     return (user) ? user : null;
   }
 

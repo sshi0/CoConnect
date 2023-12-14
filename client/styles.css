@@ -284,10 +284,8 @@ input {
     height: 15px;
 }
 .aboutText {
-    color: white;
     font-size: 20px;
     text-align: left;
     justify-self: center;
-    font-family:system-ui;
     padding: 1vmin;
 }

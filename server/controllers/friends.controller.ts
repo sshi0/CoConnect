@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import { JWT_KEY as secretKey, JWT_EXP as tokenExpiry } from '../env';
 import {
   ISuccess,
-  YacaError,
+  ClientError,
   UnknownError,
   isClientError,
   isISuccess,
@@ -50,12 +50,12 @@ export default class FriendsController extends Controller {
       catch (err) {
         console.log("Caught error in token")
         console.log(err);
-        const jwtError = new YacaError('AuthenticationError', 'Token is invalid');
+        const jwtError = new ClientError('AuthenticationError', 'Token is invalid');
         res.status(401).json(jwtError); 
       }
     }
     else {
-      const err = new YacaError('AuthenticationError', 'Missing authentication token');
+      const err = new ClientError('AuthenticationError', 'Missing authentication token');
       res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
     }
   }
@@ -138,7 +138,7 @@ export default class FriendsController extends Controller {
 
     try {
       if (!friend) {
-        throw new YacaError('FriendNotFound', 'Unable to delete non-existent friend');
+        throw new ClientError('FriendNotFound', 'Unable to delete non-existent friend');
       }
       const updatedUser = await User.deleteFriend(username, friend);
       if (updatedUser) {

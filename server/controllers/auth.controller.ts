@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import { JWT_KEY as secretKey, JWT_EXP as tokenExpiry } from '../env';
 import {
   ISuccess,
-  YacaError,
+  ClientError,
   UnknownError,
   isClientError,
   isISuccess,
