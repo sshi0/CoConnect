@@ -5,7 +5,7 @@ import { IResponse } from '../common/server.responses';
 import { ILogin, IUser } from '../common/user.interface';
 import {
   ISuccess,
-  YacaError,
+  ClientError,
   UnknownError,
   isClientError,
   isISuccess,
@@ -14,7 +14,7 @@ import {
 
 function onInviteFriend(friend: IFriend): void {
   // event handler to invite a friend by email when a checkbox is checked
-  const subject = 'I am inviting you to join YACA to chat with us!';
+  const subject = 'I am inviting you to join coConnect to chat with us!';
   const mailtoLink = 
   `mailto:${friend.email}?subject=${encodeURIComponent(subject)}`;
   const newWindow: Window | null = window.open(
@@ -68,8 +68,8 @@ async function onDeleteFriend(id: string): Promise<void> {
         localStorage.setItem('friendNames', JSON.stringify(friendNames));
       }
       else if (res.status === 400) {
-        const data: YacaError = res.data;
-        alert('Delete friends failed, YACA Error: ' + data.message);
+        const data: ClientError = res.data;
+        alert('Delete friends failed, Client Error: ' + data.message);
       }
       else {
         const data: UnknownError = res.data;
@@ -131,8 +131,8 @@ async function loadFriendsIntoDocument(): Promise<void> {
         }
       }
       else if (res.status === 400) {
-        const data: YacaError = res.data;
-        alert('Load friends failed, YACA Error: ' + data.message);
+        const data: ClientError = res.data;
+        alert('Load friends failed, Client Error: ' + data.message);
       }
       else {
         const data: UnknownError = res.data;
@@ -191,7 +191,7 @@ async function onAddFriend(): Promise<void> {
       }
     }
     else if (res.status === 400 || res.status === 401) {
-      const data: YacaError = res.data;
+      const data: ClientError = res.data;
       alert('Add Friends failed, ' + data.name + ": " + data.message);
     }
     else {
@@ -227,7 +227,7 @@ async function onClearFriends(): Promise<void> {
         loadFriendsIntoDocument();
       }
       else if (res.status === 400 || res.status === 401) {
-        const data: YacaError = res.data;
+        const data: ClientError = res.data;
         alert('Clear Friends failed, ' + data.name + ": " + data.message);
       }
       else {

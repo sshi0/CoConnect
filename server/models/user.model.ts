@@ -4,7 +4,7 @@
 import { ILogin, IUser } from '../../common/user.interface';
 import { v4 as uuidV4 } from 'uuid';
 import DAO from '../db/dao';
-import { YacaError, UnknownError } from '../../common/server.responses';
+import { ClientError, UnknownError } from '../../common/server.responses';
 import bcrypt from 'bcrypt';
 import { IFriend } from 'common/friend.interface';
 
@@ -24,26 +24,26 @@ export class User implements IUser {
   }
 
   async join(): Promise<IUser> {
-    // join YACA as a user, serving the register request
+    // join coConnect as a user, serving the register request
     console.log('Display Name: ' + this.extra + ' ' + !this.extra);
     const isValidPassword = await User.checkPassword(this.credentials);
     if (!this.credentials.username) {
-      throw new YacaError('Username empty', 'Username cannot be empty');
+      throw new ClientError('Username empty', 'Username cannot be empty');
     }
     else if (!this.credentials.password) {
-      throw new YacaError('Password empty', 'Password cannot be empty');
+      throw new ClientError('Password empty', 'Password cannot be empty');
     }
     else if (!this.extra) {
-      throw new YacaError('Display Name empty', 'Choose a display name');
+      throw new ClientError('Display Name empty', 'Choose a display name');
     }
     else if (isValidPassword != null) {
-      throw new YacaError('Invalid Password', isValidPassword);
+      throw new ClientError('Invalid Password', isValidPassword);
     }
     const username = this.credentials.username;
     const existingUsername = await User.getUserForUsername(this.credentials.username);
     const existingDisplayName = await User.getUserForDisplayName(this.extra);
     if (existingUsername || existingDisplayName) {
-      throw new YacaError('User Exists', 'User already exists');
+      throw new ClientError('User Exists', 'User already exists');
     }
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(this.credentials.password, salt);
@@ -54,21 +54,21 @@ export class User implements IUser {
   }
 
   async login(): Promise<IUser> {
-    // login to  YACA with user credentials
+    // login to  coConnect with user credentials
     if (this.credentials.username == '') {
-      throw new YacaError('Username empty', 'Username cannot be empty');
+      throw new ClientError('Username empty', 'Username cannot be empty');
     }
     else if (this.credentials.password == '') {
-      throw new YacaError('Password empty', 'Password cannot be empty');
+      throw new ClientError('Password empty', 'Password cannot be empty');
     }
     const user = await User.getUserForUsername(this.credentials.username);
     if (!user) {
-      throw new YacaError('Invalid Username', 'User not found');
+      throw new ClientError('Invalid Username', 'User not found');
     }
     else {
       const match = await bcrypt.compare(this.credentials.password, user.credentials.password);
       if (!match) {
-        throw new YacaError('Password Error', 'Incorrect password');
+        throw new ClientError('Password Error', 'Incorrect password');
       }
     }
     return this;
@@ -81,10 +81,10 @@ export class User implements IUser {
     if (user) {
       const friendExists = user.friends?.find((f) => f.email === friend.email);
       if (friendExists) {
-        throw new YacaError('FriendExists', 'This friend already exists');
+        throw new ClientError('FriendExists', 'This friend already exists');
       }
       else if (friend.email === user.credentials.username) {
-        throw new YacaError('Adding ownself as friend', 'User trying to add himself as friend');
+        throw new ClientError('Adding ownself as friend', 'User trying to add himself as friend');
       }
       else {
         user.friends?.push(friend);
@@ -92,7 +92,7 @@ export class User implements IUser {
       }
     }
     else {
-      throw new YacaError('UserNotFound', 'User not found');
+      throw new ClientError('UserNotFound', 'User not found');
     }
     return updatedUser;
   }
@@ -105,7 +105,7 @@ export class User implements IUser {
       console.log("Friend to delete: " + friend.email);
       const friendExists = user.friends?.find((f) => f.email === friend.email);
       if (!friendExists) {
-        throw new YacaError('FriendNotFound', 'Unable to delete non-existent friend');
+        throw new ClientError('FriendNotFound', 'Unable to delete non-existent friend');
       }
       else {
         user.friends = user.friends?.filter((f) => f.email !== friend.email);
@@ -113,7 +113,7 @@ export class User implements IUser {
       }
     }
     else {
-      throw new YacaError('UserNotFound', 'User not found');
+      throw new ClientError('UserNotFound', 'User not found');
     }
     return updatedUser;
   }
@@ -126,7 +126,7 @@ export class User implements IUser {
       await DAO._db.updateUser(user);
     }
     else {
-      throw new YacaError('UserNotFound', 'User not found');
+      throw new ClientError('UserNotFound', 'User not found');
     }
     return user;
   }
@@ -154,7 +154,7 @@ export class User implements IUser {
     // validate the credentials of a user
     const user = await DAO._db.findUserByUsername(credentials.username);
     if (!user) {
-      throw new YacaError('Invalid Token', 'Token is invalid');
+      throw new ClientError('Invalid Token', 'Token is invalid');
     }
     return user;
   }

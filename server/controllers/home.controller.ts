@@ -27,7 +27,7 @@ export default class HomeController extends Controller {
   }
 
   public aboutPage(req: Request, res: Response): void {
-    // const about: 'This is YACA Server';
+    // const about: 'This is coConnect Server';
     res.redirect('/pages/about.html');
   }
 }

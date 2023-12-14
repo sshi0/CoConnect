@@ -11,7 +11,7 @@ import jwt from 'jsonwebtoken';
 import { JWT_KEY as secretKey, JWT_EXP as tokenExpiry } from '../env';
 import {
   ISuccess,
-  YacaError,
+  ClientError,
   UnknownError,
   isClientError,
   isISuccess,
@@ -59,12 +59,12 @@ export default class ChatController extends Controller {
       catch (err) {
         console.log("Caught error in token")
         console.log(err);
-        const jwtError = new YacaError('AuthenticationError', 'Token is invalid');
+        const jwtError = new ClientError('AuthenticationError', 'Token is invalid');
         res.status(401).json(jwtError); 
       }
     }
     else {
-      const err = new YacaError('AuthenticationError', 'Missing authentication token');
+      const err = new ClientError('AuthenticationError', 'Missing authentication token');
       res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
     }
   }
@@ -98,7 +98,7 @@ export default class ChatController extends Controller {
   public async updateUser(req: Request, res: Response) {
     // update data for one user
     if (req.body.credentials.username != res.locals.authorizedUser) {
-      const err = new YacaError('Authorization Error', 'User is not authorized to update this user');
+      const err = new ClientError('Authorization Error', 'User is not authorized to update this user');
       res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
     }
     try {
@@ -128,7 +128,7 @@ export default class ChatController extends Controller {
   public async getUser(req: Request, res: Response) {
     // gets one user with username given in url
     if (req.params.username != res.locals.authorizedUser) {
-      const err = new YacaError('AuthorizationError', 'User is not authorized to get this user');
+      const err = new ClientError('AuthorizationError', 'User is not authorized to get this user');
       res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
     }
     try {
@@ -159,7 +159,7 @@ export default class ChatController extends Controller {
   public async postMessage(req: Request, res: Response) {
     // Post a new chat message
     if (req.body.author != res.locals.authorizedUser) {
-      const err = new YacaError('Authorization Error', 'User is not authorized to post this message under this username');
+      const err = new ClientError('Authorization Error', 'User is not authorized to post this message under this username');
       res.status(401).json({name: err.name, message:err.message}); // user already exists, sends error response
     }
     try {
@@ -195,7 +195,7 @@ export default class ChatController extends Controller {
     try {
       const user = await User.getUserForUsername(res.locals.authorizedUser);
       if (!user) {
-        const err = new YacaError('InvalidUser', 'User does not exist');
+        const err = new ClientError('InvalidUser', 'User does not exist');
         res.status(401).json({name: err.name, message:err.message});
         return; 
       }

@@ -8,7 +8,7 @@ import { Schema, model } from 'mongoose';
 import { IUser } from '../../common/user.interface';
 import { IChatMessage } from '../../common/chatMessage.interface';
 import { IFriend } from '../../common/friend.interface';
-import { YacaError, UnknownError } from '../../common/server.responses'; // if needed
+import { ClientError, UnknownError } from '../../common/server.responses'; // if needed
 
 const UserSchema = new Schema<IUser>({
   credentials : {
